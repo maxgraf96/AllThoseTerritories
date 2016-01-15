@@ -1,5 +1,6 @@
 import javax.print.DocFlavor;
 import javax.print.attribute.IntegerSyntax;
+import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,10 +52,10 @@ public class MapReader {
         return stringMap;
     }
 
-    public HashMap<String, List<List<Coordinates>>> interpretTerritories(HashMap<Integer, String> worldMap){
+    public HashMap<String, List<Polygon>> interpretTerritories(HashMap<Integer, String> worldMap){
 
         // patchOfList assigns each country a number of point coordinates
-        HashMap<String, List<List<Coordinates>>> patchOfHashMap = new HashMap();
+        HashMap<String, List<Polygon>> patchOfHashMap = new HashMap();
 
         // List of countries for access in WorldMap.paintComponent(Graphics g);
         List<String> countries = new ArrayList<>();
@@ -166,21 +167,49 @@ public class MapReader {
                 // Check if country is already in HashMap
                 if(patchOfHashMap.containsKey(countryName)){
                     // Add new patch
-                    patchOfHashMap.get(countryName).add(coordinatesList);
+                    // Convert List of coordinates into a Polygon
+                    int[] xes = new int[coordinatesList.size()];
+                    int[] yes = new int[coordinatesList.size()];
+
+
+                    for (int j = 0; j < coordinatesList.size(); j++) {
+                        xes[j] = coordinatesList.get(j).getX();
+                        yes[j] = coordinatesList.get(j).getY();
+                    }
+
+                    // This polygon defines one shape, e.g. island, country etc
+                    Polygon polygon = new Polygon(xes,yes,coordinatesList.size());
+
+                    // Add
+                    patchOfHashMap.get(countryName).add(polygon);
 
                     // Add to territoria
-                    territoriumHashMap.get(countryName).getShapes().add(coordinatesList);
+                    territoriumHashMap.get(countryName).getShapes().add(polygon);
                 }
                 else{
                     // Create new entry
-                    List<List<Coordinates>> listoflists = new ArrayList<>();
-                    listoflists.add(coordinatesList);
-                    patchOfHashMap.put(countryName, listoflists);
+                    List<Polygon> polygons = new ArrayList<>();
+
+                    // Convert List of coordinates into a Polygon
+                    int[] xes = new int[coordinatesList.size()];
+                    int[] yes = new int[coordinatesList.size()];
+
+
+                    for (int j = 0; j < coordinatesList.size(); j++) {
+                        xes[j] = coordinatesList.get(j).getX();
+                        yes[j] = coordinatesList.get(j).getY();
+                    }
+
+                    // This polygon defines one shape, e.g. island, country etc
+                    Polygon polygon = new Polygon(xes,yes,coordinatesList.size());
+
+                    polygons.add(polygon);
+                    patchOfHashMap.put(countryName, polygons);
 
                     // Add to the GameElements.TERRITORIA list
                     Territorium current = new Territorium(countryName);
-                    current.setShapes(listoflists);
-                    territoriumHashMap.put(countryName,current);
+                    current.setShapes(polygons);
+                    territoriumHashMap.put(countryName, current);
                 }
 
                 // Add country names to List of countries for access in WorldMap.paintComponent(Graphics g);

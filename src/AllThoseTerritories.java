@@ -15,7 +15,7 @@ public class AllThoseTerritories extends JFrame {
 
         HashMap<Integer,String> myMap = mapReader.getStringMap();
 
-        HashMap<String, List<List<Coordinates>>> myDrawMap = mapReader.interpretTerritories(myMap);
+        HashMap<String, List<Polygon>> myDrawMap = mapReader.interpretTerritories(myMap);
 
         // Initialize the User Interface
         UI window = new UI();

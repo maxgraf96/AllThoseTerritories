@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.*;
 import java.util.List;
 
@@ -8,10 +10,10 @@ import java.util.List;
  */
 
 //Extend JFrame so we can use this as a window
-public class UI extends JFrame{
+public class UI extends JFrame {
 
     // This method takes care of the most basic configuration of the main window
-    public void init(HashMap<String,List<List<Coordinates>>> worldMap){
+    public void init(HashMap<String,List<Polygon>> worldMap){
 
         // Set window title
         setTitle("AllThoseTerritories v" + Constants.VERSION);
@@ -27,11 +29,12 @@ public class UI extends JFrame{
         genesis(worldMap);
     }
 
-    private void genesis(HashMap<String,List<List<Coordinates>>> worldMap){
+    private void genesis(HashMap<String,List<Polygon>> worldMap){
 
         // Create our world
-        WorldMap myWorld = new WorldMap(worldMap);
-        add(myWorld);
 
+        WorldMap myWorld = new WorldMap(worldMap);
+        myWorld.addMouseListener(new WorldMapMouseListener());
+        add(myWorld);
     }
 }
