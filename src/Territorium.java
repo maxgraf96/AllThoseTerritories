@@ -7,7 +7,7 @@ public class Territorium {
 
     private String name = "";
     private List<Territorium> neighbors;
-    private List<List<Coordinates>> shape;
+    private List<List<Coordinates>> shapes;
     private String capitalcity = "";
 
     public Territorium(String name) {
@@ -30,12 +30,12 @@ public class Territorium {
         this.neighbors = neighbors;
     }
 
-    public List<List<Coordinates>> getShape() {
-        return shape;
+    public List<List<Coordinates>> getShapes() {
+        return shapes;
     }
 
-    public void setShape(List<List<Coordinates>> shape) {
-        this.shape = shape;
+    public void setShapes(List<List<Coordinates>> shapes) {
+        this.shapes = shapes;
     }
 
     public String getCapitalcity() {

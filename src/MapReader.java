@@ -169,7 +169,7 @@ public class MapReader {
                     patchOfHashMap.get(countryName).add(coordinatesList);
 
                     // Add to territoria
-                    territoriumHashMap.get(countryName).getShape().add(coordinatesList);
+                    territoriumHashMap.get(countryName).getShapes().add(coordinatesList);
                 }
                 else{
                     // Create new entry
@@ -179,7 +179,7 @@ public class MapReader {
 
                     // Add to the GameElements.TERRITORIA list
                     Territorium current = new Territorium(countryName);
-                    current.setShape(listoflists);
+                    current.setShapes(listoflists);
                     territoriumHashMap.put(countryName,current);
                 }
 
