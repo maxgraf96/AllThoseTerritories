@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -6,7 +7,7 @@ import java.util.List;
  */
 public class GameElements {
     // String array for country names
-    public static List<String> COUNTRIES;
+    public static List<String> COUNTRIES = new ArrayList<>();
 
     // List of territoria with info
     public static HashMap<String, Territorium> TERRITORIA = new HashMap<>();

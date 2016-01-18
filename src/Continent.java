@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -5,13 +6,18 @@ import java.util.List;
  */
 public class Continent {
     private String name = "";
-    private List<Territorium> territoria;
+    private List<Territorium> territoria = new ArrayList<>();
     boolean isConquered = false;
+    private int continentValue;
 
     public Continent(String name, List<Territorium> territoria, boolean isConquered) {
         this.name = name;
         this.territoria = territoria;
         this.isConquered = isConquered;
+    }
+
+    public Continent(String name){
+        this.name = name;
     }
 
     public String getName() {
@@ -29,4 +35,8 @@ public class Continent {
     public void setConquered(boolean conquered) {
         isConquered = conquered;
     }
+
+    public void addTerritorium(Territorium territorium){this.territoria.add(territorium);}
+
+    public void setContinentValue(int value){this.continentValue = value;}
 }

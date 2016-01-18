@@ -1,31 +1,40 @@
-import javax.print.DocFlavor;
-import javax.print.attribute.IntegerSyntax;
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
+
 import java.awt.*;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.IntSummaryStatistics;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
 import java.util.List;
 
 /**
- * Created by max on 13.01.16.
- */
+ * Created by Nemanja on 16.01.2016.
+*/
 public class MapReader {
 
+    // Map which assings each line of a world file to an integer
     private HashMap<Integer, String> stringMap;
 
-    public MapReader(){
+    // Constructor
+    public MapReader() throws IOException{
         stringMap = readMap();
     }
 
-    public HashMap<Integer,String> readMap(){
+    // Getter
+    public HashMap<Integer, String> getStringMap(){
+        return stringMap;
+    }
+
+    // Methods
+    public HashMap<Integer,String> readMap() throws IOException{
 
         // HashMap for each line of map file
         HashMap<Integer, String> stringMap = new HashMap();
         // Counter for line numbers in HashMap
         int counter = 0;
 
-        try(BufferedReader br = new BufferedReader(new FileReader("Resources/Maps/world.map"))) {
+        BufferedReader br = new BufferedReader(new FileReader("Resources/Maps/world.map"));
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
 
@@ -42,193 +51,163 @@ public class MapReader {
                 sb.append(System.lineSeparator());
                 line = br.readLine();
             }
-        }
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
         return stringMap;
     }
 
-    public HashMap<String, List<Polygon>> interpretTerritories(HashMap<Integer, String> worldMap){
+    public String readWord(StringBuilder line) {
+        /** Method Explanation **
+         *The readWord gets a line as input and returns the first word in it while also removing it from the line.
+         *It is meant to be used repeatedly until the line is obliterated. :)
+         */
+        for (int index = 0; ; index++) {
+            if (line.charAt(index) == ' ') {
+                String word = line.substring(0, index); //Gets the first word(or set of numbers) without the space after it
+                if(index != line.length() - 1){
+                    // Everything
+                    line.delete(0, index + 1); // deletes the word from the line with the space after it
+                    return word;
+                }else {
 
-        // patchOfList assigns each country a number of point coordinates
-        HashMap<String, List<Polygon>> patchOfHashMap = new HashMap();
+                    // Last item
+                    line.delete(0, index); // deletes the word from the line with the space after it
+                    line.deleteCharAt(0);
+                    return word;
+                }
+            }
+        }
+    }
 
-        // List of countries for access in WorldMap.paintComponent(Graphics g);
-        List<String> countries = new ArrayList<>();
+    public String readName(StringBuilder line) {
+        /** Method Explanation **
+         *The readName gets a line as input and returns the first constructable name
+         *While also removing it from the line
+         * It checks for the first character in the line to see if it's a part of a name
+         */
+        String name = "";
+        char charCheck = line.charAt(0);
+
+        while(charCheck >= 'A' && charCheck <= 'Z'){ // Checks if the first character in the line is a letter
+            String currentWord = readWord(line);
+            name += name.equals("") ?  currentWord : " " + currentWord;
+            if(line == null || line.toString().equals(""))
+                return name;
+
+            if(!line.toString().equals(""))
+                charCheck = line.charAt(0);
+            else
+                break;
+
+        } return name;
+    }
+
+    public void readCoordinates(StringBuilder line, List<Coordinates> coordinatesList) {
+        /**Method Explanation**
+         * Takes a line and the coordinatesList as input and fills the coordinatesList with coordinates
+         * While also removing them from the line
+         * It checks for the first character in the line to see if it's a part of a coordinate
+         */
+        String x = "";
+        String y = "";
+        boolean isXcoordinate = true; //Used as an indicator to see if a coordinate is X or Y
+        char charCheck = line.charAt(0);
+        while(charCheck >= '0' && charCheck <= '9') {// Checks if the first character in the line is a number
+            if (isXcoordinate) {
+                x = readWord(line);
+                isXcoordinate = false;
+            }
+            else {
+                y = readWord(line);
+                isXcoordinate = true;
+                Coordinates coords = new Coordinates(Integer.parseInt(x), Integer.parseInt(y));
+                coordinatesList.add(coords);
+
+            }
+            if(!line.toString().equals(""))
+                charCheck = line.charAt(0);
+            else
+                break;
+        }
+    }
+
+    public Polygon PointsToPolygon(List<Coordinates> coordinatesList){
+        /**Method Explanation**
+         * Uses the coordinates makes a polygon out of them
+         */
+
+        // Convert List of coordinates into a Polygon
+        int[] xCoordinates = new int[coordinatesList.size()];
+        int[] yCoordinates = new int[coordinatesList.size()];
+
+
+        for (int j = 0; j < coordinatesList.size(); j++) {
+            xCoordinates[j] = coordinatesList.get(j).getX();
+            yCoordinates[j] = coordinatesList.get(j).getY();
+        }
+
+        // This polygon defines one shape, e.g. island, country etc
+        Polygon polygon = new Polygon(xCoordinates,yCoordinates,coordinatesList.size());
+        return polygon;
+    }
+
+    public HashMap<String, Territorium> interpretTerritories(HashMap<Integer, String> worldMap){
 
         // HashMap of territoria
         HashMap<String, Territorium> territoriumHashMap = new HashMap<>();
 
-        for (int i = 0; i < worldMap.size(); i++) {
-            String line = worldMap.get(i);
-            if(line.contains("patch-of")){
+        //HashMap of Continents
+        HashMap<String, Continent> continentHashMap = new HashMap<>();
 
-                /*
-                Stage 1: Get the country name
-                 */
+        for (int i = 0; i < worldMap.size(); i++){
+            // ArrayList to save values
+            List<Coordinates> coordinatesList = new ArrayList<>();
 
-                // Write country name into this string
-                String countryName = "";
-
-                // Remove the "patch-of " part
-                line = line.replace("patch-of ", "");
-
-                // Use a String reader to get the country name
-                StringReader stringReader = new StringReader(line);
-
-                try{
-                    boolean cont = true;
-                    while(cont){
-                        char current = (char)stringReader.read();
-                        if(current == '0' || current == '1' || current == '2' || current == '3' || current == '4' ||
-                                current == '5' || current == '6' || current == '7' || current == '8' || current == '9') {
-                            cont = false;
-                        }
-                        else {
-                            countryName += current;
-                        }
+            StringBuilder line = new StringBuilder(worldMap.get(i) + ' ');// Additional space -> end of line mark
+            String checkTypeOfLine = readWord(line);
+            String countryName = "";
+            switch (checkTypeOfLine) {
+                case "patch-of":
+                    countryName = readName(line);
+                    readCoordinates(line, coordinatesList);
+                    Polygon polygonPatch = PointsToPolygon(coordinatesList);
+                    if (!territoriumHashMap.containsKey(countryName)) { // if it does not contain the country
+                        Territorium current = new Territorium(countryName);
+                        territoriumHashMap.put(countryName, current);
                     }
-                } catch (IOException e){
-                    countryName = "Country name not found!";
-                }
-
-                // Remove last charachter (this is a space symbol)
-                countryName = countryName.substring(0, countryName.length() - 1);
-
-                /*
-                Stage two: Get coordinates
-                 */
-                // Use a String reader to get the country name
-                StringReader coorReader = new StringReader(line);
-
-                // ArrayList to save values
-                List<Coordinates> coordinatesList = new ArrayList<>();
-
-                try{
-                    boolean letters = true;
-                    int spacecount = 0;
-                    String x = "";
-                    String y = "";
-
-                    while(letters){
-                        char current = (char)coorReader.read();
-                        if(current == '0' || current == '1' || current == '2' || current == '3' || current == '4' ||
-                                current == '5' || current == '6' || current == '7' || current == '8' || current == '9') {
-                            letters = false;
-                            x += current;
-                        }
+                    territoriumHashMap.get(countryName).addShape(polygonPatch);
+                    break;
+                case "capital-of":
+                    countryName = readName(line);
+                    readCoordinates(line, coordinatesList);
+                    territoriumHashMap.get(countryName).setCapitalcity(coordinatesList.get(0));
+                    // Add country name to GameElements
+                    GameElements.COUNTRIES.add(countryName);
+                    break;
+                case "neighbors-of":
+                    countryName = readName(line);
+                    String neighbourName = "";
+                    while (line != null && !line.toString().equals("")) {
+                        readWord(line);
+                        neighbourName = readName(line);
+                        territoriumHashMap.get(countryName).addNeighbour(territoriumHashMap.get(neighbourName));
                     }
+                    break;
+                case "continent":
+                    String continentName = readName(line);
+                    Continent current = new Continent(continentName);
+                    current.setContinentValue(Integer.parseInt(readWord(line)));
 
-                    while(spacecount < 3) {
-                        if (spacecount == 2) {
-                            // Add coordinates to list
-                            Coordinates coords = new Coordinates(Integer.parseInt(x), Integer.parseInt(y));
-                            coordinatesList.add(coords);
-                            x = "";
-                            y = "";
-
-                            // Reset spacecount
-                            spacecount = 0;
-                        }
-                        int tempcurrent = coorReader.read();
-                        // Exit at end of line
-                        if (tempcurrent == -1) {
-                            spacecount = 3;
-                             // Add last coordinates
-                            Coordinates last = new Coordinates(Integer.parseInt(x),Integer.parseInt(y));
-                            coordinatesList.add(last);
-                        }
-                        else {
-                            char ccurrent = (char) tempcurrent;
-                            if (ccurrent == ' ') {
-                                spacecount++;
-                            } else {
-                                if (spacecount == 1)
-                                    y += ccurrent;
-                                else
-                                    x += ccurrent;
-                            }
-                        }
+                    while (line != null && !line.toString().equals("")) {
+                        readWord(line);// cuts the " : " and " - " out of the line
+                        countryName = readName(line);
+                        current.addTerritorium(territoriumHashMap.get(countryName));
                     }
-
-
-                } catch (IOException e){
-                    countryName = "No coordinates found!";
-                }
-
-                // Close
-                stringReader.close();
-                coorReader.close();
-
-                // Check if country is already in HashMap
-                if(patchOfHashMap.containsKey(countryName)){
-                    // Add new patch
-                    // Convert List of coordinates into a Polygon
-                    int[] xes = new int[coordinatesList.size()];
-                    int[] yes = new int[coordinatesList.size()];
-
-
-                    for (int j = 0; j < coordinatesList.size(); j++) {
-                        xes[j] = coordinatesList.get(j).getX();
-                        yes[j] = coordinatesList.get(j).getY();
-                    }
-
-                    // This polygon defines one shape, e.g. island, country etc
-                    Polygon polygon = new Polygon(xes,yes,coordinatesList.size());
-
-                    // Add
-                    patchOfHashMap.get(countryName).add(polygon);
-
-                    // Add to territoria
-                    territoriumHashMap.get(countryName).getShapes().add(polygon);
-                }
-                else{
-                    // Create new entry
-                    List<Polygon> polygons = new ArrayList<>();
-
-                    // Convert List of coordinates into a Polygon
-                    int[] xes = new int[coordinatesList.size()];
-                    int[] yes = new int[coordinatesList.size()];
-
-
-                    for (int j = 0; j < coordinatesList.size(); j++) {
-                        xes[j] = coordinatesList.get(j).getX();
-                        yes[j] = coordinatesList.get(j).getY();
-                    }
-
-                    // This polygon defines one shape, e.g. island, country etc
-                    Polygon polygon = new Polygon(xes,yes,coordinatesList.size());
-
-                    polygons.add(polygon);
-                    patchOfHashMap.put(countryName, polygons);
-
-                    // Add to the GameElements.TERRITORIA list
-                    Territorium current = new Territorium(countryName);
-                    current.setShapes(polygons);
-                    territoriumHashMap.put(countryName, current);
-                }
-
-                // Add country names to List of countries for access in WorldMap.paintComponent(Graphics g);
-                if(!countries.contains(countryName)){
-                    countries.add(countryName);
-                }
             }
         }
 
-        // Add list of country strings to Constants
-        GameElements.COUNTRIES = countries;
-
-        // Add HashMap of Territoria
+        // Make territories accessible from every part of the game
         GameElements.TERRITORIA = territoriumHashMap;
 
-        return patchOfHashMap;
+        return territoriumHashMap;
     }
 
-    public HashMap<Integer, String> getStringMap(){
-        return stringMap;
-    }
 }

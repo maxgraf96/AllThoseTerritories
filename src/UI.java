@@ -13,7 +13,7 @@ import java.util.List;
 public class UI extends JFrame {
 
     // This method takes care of the most basic configuration of the main window
-    public void init(HashMap<String,List<Polygon>> worldMap){
+    public void init(HashMap<String,Territorium> worldMap){
 
         // Set window title
         setTitle("AllThoseTerritories v" + Constants.VERSION);
@@ -29,7 +29,7 @@ public class UI extends JFrame {
         genesis(worldMap);
     }
 
-    private void genesis(HashMap<String,List<Polygon>> worldMap){
+    private void genesis(HashMap<String,Territorium> worldMap){
 
         // Create our world
 

@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -7,9 +8,9 @@ import java.util.List;
 public class Territorium {
 
     private String name = "";
-    private List<Territorium> neighbors;
-    private String capitalcity = "";
-    private List<Polygon> shapes;
+    private List<Territorium> neighbours = new ArrayList<>();
+    private Coordinates capitalcity;
+    private List<Polygon> shapes = new ArrayList<>();
 
     public Territorium(String name) {
         this.name = name;
@@ -24,11 +25,11 @@ public class Territorium {
     }
 
     public List<Territorium> getNeighbors() {
-        return neighbors;
+        return neighbours;
     }
 
     public void setNeighbors(List<Territorium> neighbors) {
-        this.neighbors = neighbors;
+        this.neighbours = neighbors;
     }
 
     public List<Polygon> getShapes() {
@@ -39,11 +40,15 @@ public class Territorium {
         this.shapes = shapes;
     }
 
-    public String getCapitalcity() {
+    public void addShape(Polygon polygon){this.shapes.add(polygon);}
+
+    public Coordinates getCapitalcity() {
         return capitalcity;
     }
 
-    public void setCapitalcity(String capitalcity) {
+    public void setCapitalcity(Coordinates capitalcity) {
         this.capitalcity = capitalcity;
     }
+
+    public void addNeighbour(Territorium territorium){this.neighbours.add(territorium);}
 }

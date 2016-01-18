@@ -13,7 +13,7 @@ public class WorldMap extends JPanel {
     HashMap<String,Territorium> worldMap;
 
     // Constructor
-    public WorldMap(HashMap<String,List<Polygon>> worldMap){
+    public WorldMap(HashMap<String,Territorium> worldMap){
         this.worldMap = GameElements.TERRITORIA;
     }
 
@@ -22,8 +22,8 @@ public class WorldMap extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        for (String terr : GameElements.COUNTRIES) {
-            Territorium current = GameElements.TERRITORIA.get(terr);
+        for (String country : GameElements.COUNTRIES) {
+            Territorium current = GameElements.TERRITORIA.get(country);
             for (int i = 0; i < current.getShapes().size(); i++) {
                 List<Polygon> shapesList = current.getShapes();
 
