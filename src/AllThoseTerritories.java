@@ -16,18 +16,18 @@ public class AllThoseTerritories extends JFrame {
         // Get a Map which assings each line of a world file to an integer
         HashMap<Integer,String> myStringMap = mapReader.getStringMap();
 
-        /* Get a Map which assings each country all its territories, the capital city and the continent
+        /* Assings each country all its territories, the capital city and the continent
             (All in one method)
         */
-        HashMap<String, Territorium> myDrawMap = mapReader.interpretTerritories(myStringMap);
+        mapReader.interpretTerritories(myStringMap);
 
         // Initialize the User Interface
         window = new UI();
-        window.init(myDrawMap);
+        window.init();
+        window.genesis();
 
         // Start the game
         Game game = new Game();
-        game.init();
 
         // for testing and info
         HashMap<String, Territorium> asdf = GameElements.TERRITORIA;

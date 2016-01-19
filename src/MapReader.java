@@ -147,7 +147,7 @@ public class MapReader {
         return polygon;
     }
 
-    public HashMap<String, Territorium> interpretTerritories(HashMap<Integer, String> worldMap){
+    public void interpretTerritories(HashMap<Integer, String> worldMap){
 
         // HashMap of territoria
         HashMap<String, Territorium> territoriumHashMap = new HashMap<>();
@@ -207,8 +207,6 @@ public class MapReader {
 
         // Make territories accessible from every part of the game
         GameElements.TERRITORIA = territoriumHashMap;
-
-        return territoriumHashMap;
     }
 
 }

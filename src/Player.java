@@ -1,9 +1,10 @@
+import java.awt.*;
 import java.util.List;
 
 /**
  * Created by max on 18.01.16.
  */
-public class Player implements IPlayer {
+public class Player {
 
     // Fields
     String name = Constants.PLAYER;
@@ -15,14 +16,25 @@ public class Player implements IPlayer {
     // Constructor
     public Player(){}
 
-    @Override
-    public void pick(List<String> countries) {
-        while(!GameElements.clicked){
-            // Do nothing
+    public boolean pick(List<String> countries, Point p) {
+        for (int i = 0; i < countries.size(); i++) {
+            Territorium current = GameElements.TERRITORIA.get(countries.get(i));
+            for (int j = 0; j < current.getShapes().size(); j++) {
+                if(current.getShapes().get(j).contains(p.getX(),p.getY())){
+                    if(!current.isConquered()) {
+                        current.setConquered(true);
+                        current.setConqueredBy(name);
+                        current.setNumberOfArmies(1);
+                        return true;
+                    }
+                    else{
+                        // is conquered, add logic later
+                    }
+                }
+            }
         }
-
-
-        GameElements.clicked = false;
+        // Player didn't click inside a territory. Has to click again
+        return false;
     }
 
     public String getName() {

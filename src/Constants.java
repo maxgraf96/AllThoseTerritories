@@ -3,7 +3,7 @@ import java.util.List;
 public class Constants{
 
     // Misc
-    public static final double VERSION = 0.2;
+    public static final double VERSION = 0.3;
 
     // Main UI Window
     public static final int WIDTH = 1250;
@@ -16,5 +16,6 @@ public class Constants{
     public static final String NONE = "none";
     public static final String PLAYER = "player";
     public static final String COMPUTER = "computer";
+    public static final String CLICKTERRITORY = "You have not selected anything. Please select a Territory.";
 
 }

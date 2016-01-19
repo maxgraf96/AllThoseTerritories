@@ -15,27 +15,27 @@ public class Game implements MouseListener {
     // Constructor
     public Game(){}
 
-    // Methods
-    public void init(){
-
-        // Pick turn by turn until all countries are picked
-        for (int i = 0; i < GameElements.COUNTRIES.size(); i++) {
-            if(GameElements.turn){
-                player.pick(GameElements.COUNTRIES);
-                GameElements.turn = !GameElements.turn;
-            }
-            else{
-                computer.pick(GameElements.COUNTRIES);
-                GameElements.turn = !GameElements.turn;
-            }
-        }
-    }
-
     @Override
     public void mouseClicked(MouseEvent e) {
 
         switch (GameElements.gamePhase){
             case "pick":
+                // Get click coords
+                Component source = e.getComponent();
+                Point p = source.getMousePosition();
+
+                // Fire
+                if(player.pick(GameElements.COUNTRIES, p)){// Only if he has clicked inside a territory
+                    // Redraw window
+                    AllThoseTerritories.window.repaint();
+
+                    // Computer's turn
+                    computer.pick(GameElements.COUNTRIES);
+                }
+                else{
+                    // Tell user to click inside a territory
+                    AllThoseTerritories.window.setInfoLabelText(Constants.CLICKTERRITORY);
+                }
 
                 break;
 

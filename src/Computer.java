@@ -4,7 +4,7 @@ import java.util.List;
 /**
  * Created by max on 18.01.16.
  */
-public class Computer implements IPlayer {
+public class Computer {
 
     // Fields
     String name = Constants.COMPUTER;
@@ -17,9 +17,7 @@ public class Computer implements IPlayer {
     public Computer(){}
 
     // Methods
-    @Override
     public void pick(List<String> countries) {
-        GameElements.turn = false;
         boolean success = false;
         while(!success){
             String country = countries.get((int) (Math.random() * countries.size()));
@@ -28,9 +26,16 @@ public class Computer implements IPlayer {
                 GameElements.TERRITORIA.get(country).setConquered(true);
                 // Set conqueredBy to computer
                 GameElements.TERRITORIA.get(country).setConqueredBy(name);
+                GameElements.TERRITORIA.get(country).setNumberOfArmies(1);
 
                 // SUCCESS
                 success = true;
+
+                // Player's turn
+                GameElements.turn = !GameElements.turn;
+                // Set the infoLabel to empty
+                AllThoseTerritories.window.setInfoLabelText("");
+                // No need to redraw window, ^^^^^^^^^^^^^^ does that
             }
         }
     }

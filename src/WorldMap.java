@@ -15,7 +15,7 @@ public class WorldMap extends JPanel {
     HashMap<String,Territorium> worldMap;
 
     // Constructor
-    public WorldMap(HashMap<String,Territorium> worldMap){
+    public WorldMap(){
         this.worldMap = GameElements.TERRITORIA;
     }
 
@@ -26,6 +26,9 @@ public class WorldMap extends JPanel {
 
         // Cast to Graphics2D for drawing features
         Graphics2D graphics2D = (Graphics2D) g;
+
+        // Make lines a little thicker
+        graphics2D.setStroke(new BasicStroke(1.1f));
 
         for (String country : GameElements.COUNTRIES) {
             Territorium current = GameElements.TERRITORIA.get(country);
