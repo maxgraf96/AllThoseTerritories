@@ -7,11 +7,21 @@ import java.awt.event.ComponentAdapter;
 // For picking territories and initializing the game
 public class Game {
 
-    public Player player = new Player("Max");
-    public Computer computer;
+    public Player player = new Player();
+    public Computer computer = new Computer();
 
-    private void init(){
-
+    public void init(){
+        boolean turn = false;
+        for (int i = 0; i < GameElements.COUNTRIES.size(); i++) {
+            if(turn){
+                player.pick(GameElements.COUNTRIES);
+                turn = !turn;
+            }
+            else{
+                computer.pick(GameElements.COUNTRIES);
+                turn = !turn;
+            }
+        }
     }
 }
 

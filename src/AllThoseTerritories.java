@@ -25,7 +25,12 @@ public class AllThoseTerritories extends JFrame {
         window = new UI();
         window.init(myDrawMap);
 
+        // Start the game
+        Game game = new Game();
+        game.init();
 
+
+        HashMap<String, Territorium> asdf = GameElements.TERRITORIA;
         int bk = 7;
     }
 

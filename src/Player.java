@@ -1,22 +1,22 @@
+import java.util.List;
+
 /**
  * Created by max on 18.01.16.
  */
 public class Player implements IPlayer {
 
     // Fields
-    String name = "";
+    String name = Constants.PLAYER;
 
     int territoriesCount = 0;
 
     int enforcements = 0;
 
     // Constructor
-    public Player(String name){
-        this.name = name;
-    }
+    public Player(){}
 
     @Override
-    public void pick() {
+    public void pick(List<String> countries) {
 
     }
 

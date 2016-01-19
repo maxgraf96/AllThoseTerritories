@@ -55,4 +55,28 @@ public class Territorium {
     }
 
     public void addNeighbour(Territorium territorium){this.neighbours.add(territorium);}
+
+    public boolean isConquered() {
+        return isConquered;
+    }
+
+    public void setConquered(boolean conquered) {
+        isConquered = conquered;
+    }
+
+    public String getConqueredBy() {
+        return conqueredBy;
+    }
+
+    public void setConqueredBy(String conqueredBy) {
+        this.conqueredBy = conqueredBy;
+    }
+
+    public int getNumberOfArmies() {
+        return numberOfArmies;
+    }
+
+    public void setNumberOfArmies(int numberOfArmies) {
+        this.numberOfArmies = numberOfArmies;
+    }
 }
