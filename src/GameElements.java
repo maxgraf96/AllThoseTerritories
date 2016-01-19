@@ -11,4 +11,10 @@ public class GameElements {
 
     // List of territoria with info
     public static HashMap<String, Territorium> TERRITORIA = new HashMap<>();
+
+    // List of continents
+    public static HashMap<String, Continent> CONTINENTS = new HashMap<>();
+
+    // To know which game phase you're in
+    public static String gamePhase = "pick";
 }

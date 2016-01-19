@@ -12,6 +12,13 @@ public class WorldMapMouseListener implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) {
 
+        switch (GameElements.gamePhase){
+            case "pick":
+
+                break;
+
+        }
+
         // Test for clicking countries - works - bug: some are printed twice, e.g. new guinea
         Component source = e.getComponent();
         Point p = source.getMousePosition();

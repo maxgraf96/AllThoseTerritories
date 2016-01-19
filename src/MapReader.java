@@ -194,13 +194,16 @@ public class MapReader {
                 case "continent":
                     String continentName = readName(line);
                     Continent current = new Continent(continentName);
-                    current.setContinentValue(Integer.parseInt(readWord(line)));
+                    current.setBonus(Integer.parseInt(readWord(line)));
 
                     while (line != null && !line.toString().equals("")) {
                         readWord(line);// cuts the " : " and " - " out of the line
                         countryName = readName(line);
                         current.addTerritorium(territoriumHashMap.get(countryName));
                     }
+
+                    GameElements.CONTINENTS.put(continentName, current);
+                    break;
             }
         }
 

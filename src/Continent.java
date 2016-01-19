@@ -7,19 +7,19 @@ import java.util.List;
 public class Continent {
     private String name = "";
     private List<Territorium> territoria = new ArrayList<>();
-    boolean isConquered = false;
-    private int continentValue;
+    private int bonus;
 
-    public Continent(String name, List<Territorium> territoria, boolean isConquered) {
+    public Continent(String name, List<Territorium> territoria) {
         this.name = name;
         this.territoria = territoria;
-        this.isConquered = isConquered;
     }
 
+    // Constructor
     public Continent(String name){
         this.name = name;
     }
 
+    // Getters and setters
     public String getName() {
         return name;
     }
@@ -28,15 +28,11 @@ public class Continent {
         return territoria;
     }
 
-    public boolean isConquered() {
-        return isConquered;
-    }
-
-    public void setConquered(boolean conquered) {
-        isConquered = conquered;
-    }
-
     public void addTerritorium(Territorium territorium){this.territoria.add(territorium);}
 
-    public void setContinentValue(int value){this.continentValue = value;}
+    public void setBonus(int value){this.bonus = value;}
+
+    public int getBonus(){
+        return this.bonus;
+    }
 }

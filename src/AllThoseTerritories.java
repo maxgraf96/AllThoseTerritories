@@ -7,6 +7,7 @@ import java.util.HashMap;
  */
 public class AllThoseTerritories extends JFrame {
 
+    public static UI window;
     public static void main(String[] args) throws IOException {
 
         // Read a map file
@@ -21,8 +22,9 @@ public class AllThoseTerritories extends JFrame {
         HashMap<String, Territorium> myDrawMap = mapReader.interpretTerritories(myStringMap);
 
         // Initialize the User Interface
-        UI window = new UI();
+        window = new UI();
         window.init(myDrawMap);
+
 
         int bk = 7;
     }

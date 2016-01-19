@@ -12,6 +12,10 @@ public class Territorium {
     private Coordinates capitalcity;
     private List<Polygon> shapes = new ArrayList<>();
 
+    private boolean isConquered = false;
+    private String conqueredBy = Constants.NONE;
+    private int numberOfArmies = 0;
+
     public Territorium(String name) {
         this.name = name;
     }

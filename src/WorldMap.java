@@ -30,6 +30,7 @@ public class WorldMap extends JPanel {
                 for (int j = 0; j < shapesList.size(); j++) {
                     Polygon shape = shapesList.get(i);
 
+                    // Draw
                     g.drawPolygon(shape.xpoints,shape.ypoints,shape.npoints);
                 }
             }

@@ -3,7 +3,7 @@ import java.util.List;
 public class Constants{
 
     // Misc
-    public static final double VERSION = 0.1;
+    public static final double VERSION = 0.2;
 
     // Main UI Window
     public static final int WIDTH = 1250;
@@ -11,5 +11,10 @@ public class Constants{
 
     // Strings
     public static final String WORLD = "World";
+
+    // Game mechanics
+    public static final String NONE = "none";
+    public static final String PLAYER = "player";
+    public static final String COMPUTER = "computer";
 
 }
