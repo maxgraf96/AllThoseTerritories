@@ -9,5 +9,5 @@ public interface IPlayer {
 
     int enforcements = 0;
 
-
+    void pick();
 }
