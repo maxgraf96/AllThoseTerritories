@@ -32,8 +32,9 @@ public class UI extends JFrame {
     private void genesis(HashMap<String,Territorium> worldMap){
 
         // Create our world
-
         WorldMap myWorld = new WorldMap(worldMap);
+
+        // Add listener for mouse clicks
         myWorld.addMouseListener(new WorldMapMouseListener());
         add(myWorld);
     }

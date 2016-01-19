@@ -17,7 +17,12 @@ public class Player implements IPlayer {
 
     @Override
     public void pick(List<String> countries) {
+        while(!GameElements.clicked){
+            // Do nothing
+        }
 
+
+        GameElements.clicked = false;
     }
 
     public String getName() {

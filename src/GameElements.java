@@ -17,4 +17,7 @@ public class GameElements {
 
     // To know which game phase you're in
     public static String gamePhase = "pick";
+
+    public static boolean turn = false; // True if your turn, else if computer's turn
+    public static boolean clicked = false;
 }

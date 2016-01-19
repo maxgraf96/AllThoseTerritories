@@ -13,10 +13,13 @@ public class Computer implements IPlayer {
 
     int enforcements = 0;
 
+    // Constructor
     public Computer(){}
 
+    // Methods
     @Override
     public void pick(List<String> countries) {
+        GameElements.turn = false;
         boolean success = false;
         while(!success){
             String country = countries.get((int) (Math.random() * countries.size()));

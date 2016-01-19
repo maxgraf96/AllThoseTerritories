@@ -29,7 +29,7 @@ public class AllThoseTerritories extends JFrame {
         Game game = new Game();
         game.init();
 
-
+        // for testing and info
         HashMap<String, Territorium> asdf = GameElements.TERRITORIA;
         int bk = 7;
     }
