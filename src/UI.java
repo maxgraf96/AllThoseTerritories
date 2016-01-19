@@ -35,7 +35,7 @@ public class UI extends JFrame {
         WorldMap myWorld = new WorldMap(worldMap);
 
         // Add listener for mouse clicks
-        myWorld.addMouseListener(new WorldMapMouseListener());
+        myWorld.addMouseListener(new Game());
         add(myWorld);
     }
 }
