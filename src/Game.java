@@ -1,11 +1,12 @@
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 /**
  * Created by max on 15.01.16.
  */
-public class Game implements MouseListener {
+public class Game implements MouseListener, MouseMotionListener {
 
     // Fields
     // Players
@@ -18,24 +19,30 @@ public class Game implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) {
 
-        switch (GameElements.gamePhase){
-            case "pick":
-                // Get click coords
-                Component source = e.getComponent();
-                Point p = source.getMousePosition();
+        // Get click coords
+        Point point = e.getPoint();
+        int state;
 
+        switch (GameElements.gamePhase){
+            case Constants.PICK:
                 // Fire
-                int checkClick = player.pick(GameElements.COUNTRIES, p);
-                if(checkClick == 1){// Only if he has clicked inside a territory
+                state = player.pick(GameElements.COUNTRIES, point);
+
+                if(state == 1){// Only if he has clicked inside a territory
+                    AllThoseTerritories.window.setCurrentTLabelText("SUCCESS");
                     // Redraw window
                     AllThoseTerritories.window.repaint();
 
                     // Computer's turn
                     computer.pick(GameElements.COUNTRIES);
                 }
-                else if(checkClick == 2){
+                else if(state == 2){
                     // Enemy T selected. Tell user to click a free territory
                     AllThoseTerritories.window.setInfoLabelText(Constants.OPPONENTSTERRITORY);
+                }
+                else if(state == 3){
+                    // Your T selected. Tell user to select another territory
+                    AllThoseTerritories.window.setInfoLabelText(Constants.YOURTERRITORY);
                 }
                 else{
                     // Tell user to click inside a territory
@@ -44,28 +51,41 @@ public class Game implements MouseListener {
 
                 break;
 
-            case "conquer":
+            // The conquer phase needs to be broken down into various sub-phases
+            case Constants.CONQUER:
+                switch (GameElements.conquerPhase){
+                    case Constants.ENFORCE:
 
+                }
+
+                break;
         }
+    }
 
-        // Test for clicking countries
-        Component source = e.getComponent();
-        Point p = source.getMousePosition();
-
+    // MouseMotionListener methods
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        // Show territory's name in the lower right corner when hovering over it
+        Point p = e.getPoint();
         for(String country : GameElements.COUNTRIES){
             Territorium territorium = GameElements.TERRITORIA.get(country);
 
             for(Polygon shape : territorium.getShapes()){
                 if(shape.contains(p)){
-                    System.out.println(territorium.getName());
+                    AllThoseTerritories.window.setCurrentTLabelText(territorium.getName());
                 }
             }
         }
+
+        AllThoseTerritories.window.repaint();
     }
 
+    @Override
+    public void mouseDragged(MouseEvent e) {
 
+    }
 
-    // Rest listener methods
+    // Rest MouseListener methods
     @Override
     public void mousePressed(MouseEvent e) {
 
@@ -78,6 +98,7 @@ public class Game implements MouseListener {
 
     @Override
     public void mouseEntered(MouseEvent e) {
+
     }
 
     @Override

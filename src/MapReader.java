@@ -200,7 +200,10 @@ public class MapReader {
                         current.addTerritorium(territoriumHashMap.get(countryName));
                     }
 
+                    // Add to list of continents
                     GameElements.CONTINENTS.put(continentName, current);
+                    // Also add name of c to list of name of continents
+                    GameElements.CNAMES.add(current.getName());
                     break;
             }
         }

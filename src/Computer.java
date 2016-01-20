@@ -8,7 +8,7 @@ public class Computer {
     // Fields
     String name = Constants.COMPUTER;
 
-    int territoriesCount = 0;
+    int territoriesCount = 0;// Not used atm
 
     int enforcements = 0;
 
@@ -26,6 +26,9 @@ public class Computer {
                 // Set conqueredBy to computer
                 GameElements.TERRITORIA.get(country).setConqueredBy(name);
                 GameElements.TERRITORIA.get(country).setNumberOfArmies(1);
+                // Change Label
+                GameElements.TERRITORIA.get(country).getArmiesView()
+                        .setText(String.valueOf(GameElements.TERRITORIA.get(country).getNumberOfArmies()));
 
                 // SUCCESS
                 success = true;
@@ -43,9 +46,48 @@ public class Computer {
                     allconq = false;
             }
             if(allconq){
-                GameElements.gamePhase = "conquer";
+                // Set game phases
+                GameElements.gamePhase = Constants.CONQUER;
+                GameElements.conquerPhase = Constants.ENFORCE;
+
+                // Show message that all territories have been selected and start the game
+                AllThoseTerritories.window.getConquerIntroPanel().setVisible(true);
+
+                // Start
+                enforce();
+
                 break;
             }
         }
+    }
+
+    public void enforce(){
+        this.enforcements = calcEnforcements();
+        int bk = 7;
+
+        AllThoseTerritories.window.infoLabel.setText("You can now enforce your territories. You have "
+                + GameElements.playerEnforcements + " to choose from. Choose wisely.");
+        GameElements.turn = true;
+    }
+
+    // Calculate enforcements
+    private int calcEnforcements(){
+        int territories = 0;
+        int bonus = 0;
+        for (String continentname : GameElements.CNAMES) {
+
+            Continent current = GameElements.CONTINENTS.get(continentname);
+            boolean all = true;
+
+            for(Territorium cT : current.getTerritoria()){
+                if(cT.getConqueredBy().equals(name)){
+                    territories++;
+                }
+                else all = false;
+            }
+            if(all)
+                bonus += current.getBonus();
+        }
+        return (territories / 3 + bonus);
     }
 }

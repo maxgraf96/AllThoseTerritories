@@ -16,8 +16,11 @@ public class Player {
     // Constructor
     public Player(){}
 
-    // 0 => no territory selected, 1 => success, 2 => opponent's territory
+    // 0 => no territory selected, 1 => success, 2 => opponent's territory, 3 => already yours
     public int pick(List<String> countries, Point p) {
+        // Make computer's turn
+        GameElements.turn = false;
+
         for (int i = 0; i < countries.size(); i++) {
             Territorium current = GameElements.TERRITORIA.get(countries.get(i));
             for (int j = 0; j < current.getShapes().size(); j++) {
@@ -26,11 +29,14 @@ public class Player {
                         current.setConquered(true);
                         current.setConqueredBy(name);
                         current.setNumberOfArmies(1);
+                        // Change Label
+                        current.getArmiesView().setText(String.valueOf(current.getNumberOfArmies()));
                         return 1;
                     }
-                    else{
+                    else if(current.isConquered() && current.getConqueredBy() == Constants.COMPUTER)
                         return 2;
-                    }
+                    else if(current.isConquered() && current.getConqueredBy() == Constants.PLAYER)
+                        return 3;
                 }
             }
         }
@@ -41,12 +47,44 @@ public class Player {
             if(!GameElements.TERRITORIA.get(GameElements.COUNTRIES.get(i)).isConquered())
                 allconq = false;
         }
-        if(allconq){
-            GameElements.gamePhase = "conquer";
+        if(allconq){// All continents are conquered
+            // Start Enforcements
+            GameElements.gamePhase = Constants.CONQUER;
+            GameElements.conquerPhase = Constants.ENFORCE;
         }
 
         // Player didn't click inside a territory. Has to click again
         return 0;
+    }
+
+    public void enforce(){
+
+        this.enforcements = calcEnforcements();
+        GameElements.turn = false;
+    }
+
+    // Calculate enforcements
+    private int calcEnforcements(){
+        int territories = 0;
+        int bonus = 0;
+        for (String continentname : GameElements.CNAMES) {
+
+            Continent current = GameElements.CONTINENTS.get(continentname);
+            boolean all = true;
+
+            for(Territorium cT : current.getTerritoria()){
+                if(cT.getConqueredBy().equals(name)){
+                    territories++;
+                }
+                else all = false;
+            }
+            if(all)
+                bonus += current.getBonus();
+        }
+
+        // Test
+        GameElements.playerEnforcements = territories / 3 + bonus;
+        return (territories / 3 + bonus);
     }
 
     public String getName() {

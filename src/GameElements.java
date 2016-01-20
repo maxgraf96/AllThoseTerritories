@@ -8,6 +8,7 @@ import java.util.List;
 public class GameElements {
     // String array for country names
     public static List<String> COUNTRIES = new ArrayList<>();
+    public static List<String> CNAMES = new ArrayList<>();
 
     // List of territoria with info
     public static HashMap<String, Territorium> TERRITORIA = new HashMap<>();
@@ -16,7 +17,11 @@ public class GameElements {
     public static HashMap<String, Continent> CONTINENTS = new HashMap<>();
 
     // To know which game phase you're in
-    public static String gamePhase = "pick";
+    public static String gamePhase = Constants.PICK;
+    public static String conquerPhase = Constants.ENFORCE;
 
     public static boolean turn = true; // True if your turn, false if computer's turn
+
+    // Test
+    public static int playerEnforcements = 0;
 }
