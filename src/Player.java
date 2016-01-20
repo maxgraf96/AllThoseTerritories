@@ -16,7 +16,8 @@ public class Player {
     // Constructor
     public Player(){}
 
-    public boolean pick(List<String> countries, Point p) {
+    // 0 => no territory selected, 1 => success, 2 => opponent's territory
+    public int pick(List<String> countries, Point p) {
         for (int i = 0; i < countries.size(); i++) {
             Territorium current = GameElements.TERRITORIA.get(countries.get(i));
             for (int j = 0; j < current.getShapes().size(); j++) {
@@ -25,16 +26,27 @@ public class Player {
                         current.setConquered(true);
                         current.setConqueredBy(name);
                         current.setNumberOfArmies(1);
-                        return true;
+                        return 1;
                     }
                     else{
-                        // is conquered, add logic later
+                        return 2;
                     }
                 }
             }
         }
+
+        // Check if all territories are conquered, if yes begin conquer phase
+        boolean allconq = true;
+        for(int i = 0; i < GameElements.TERRITORIA.size(); i++){
+            if(!GameElements.TERRITORIA.get(GameElements.COUNTRIES.get(i)).isConquered())
+                allconq = false;
+        }
+        if(allconq){
+            GameElements.gamePhase = "conquer";
+        }
+
         // Player didn't click inside a territory. Has to click again
-        return false;
+        return 0;
     }
 
     public String getName() {

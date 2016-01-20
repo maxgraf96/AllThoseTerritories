@@ -1,9 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.*;
-import java.util.List;
 
 /**
  * Created by max on 12.01.16.
@@ -49,11 +44,23 @@ public class UI extends JFrame {
         // Add infoLabel
         myWorld.add(infoLabel);
 
+        // Add views displaying current troops
+        addArmiesLabels();
+
         // Add to JFrame
         add(myWorld);
 
         // Lights on!
         setVisible(true);
+    }
+
+    private void addArmiesLabels(){
+        for(String country : GameElements.COUNTRIES){
+            Territorium current = GameElements.TERRITORIA.get(country);
+            current.getArmiesView().setBounds(current.getCapitalcity().getX(), current.getCapitalcity().getY(),
+                    Constants.ARMIESVIEWWIDTH, Constants.ARMIESVIEWHEIGHT);
+            add(current.getArmiesView());
+        }
     }
 
     public JLabel getInfoLabel() {

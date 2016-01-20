@@ -1,9 +1,5 @@
-import com.sun.corba.se.impl.orbutil.graph.Graph;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.HashMap;
 import java.util.List;
 
@@ -27,7 +23,36 @@ public class WorldMap extends JPanel {
         // Cast to Graphics2D for drawing features
         Graphics2D graphics2D = (Graphics2D) g;
 
-        // Make lines a little thicker
+        // Draw lines between capitals
+        for(String country : GameElements.COUNTRIES){
+            Territorium current = GameElements.TERRITORIA.get(country);
+
+            // Draw lines between capitals
+            for(Territorium neighbor : current.getNeighbors()){
+                // There is one exception: From Kamtchatka to alaska the line must go through the screen border >:(
+                if(current.getName().equals("Alaska") || current.getName().equals("Kamchatka")){
+                    // Thicker line
+                    graphics2D.setStroke(new BasicStroke(1.8f));
+                    if(current.getName().equals("Alaska")){
+                        graphics2D.drawLine(current.getCapitalcity().getX(),current.getCapitalcity().getY(),
+                                0,current.getCapitalcity().getY());
+                    }
+                    else if(current.getName().equals("Kamchatka")){
+                        graphics2D.drawLine(current.getCapitalcity().getX(),current.getCapitalcity().getY(),
+                                AllThoseTerritories.window.getWidth(), current.getCapitalcity().getY());
+                    }
+                }
+                else {// All other lines
+                    // Thicker line
+                    graphics2D.setStroke(new BasicStroke(1.8f));
+                    graphics2D.drawLine(current.getCapitalcity().getX(), current.getCapitalcity().getY(),
+                            neighbor.getCapitalcity().getX(), neighbor.getCapitalcity().getY());
+                }
+            }
+        }
+
+        // Draw everything else
+        // Make lines a little appropriate
         graphics2D.setStroke(new BasicStroke(1.1f));
 
         for (String country : GameElements.COUNTRIES) {
@@ -64,6 +89,10 @@ public class WorldMap extends JPanel {
                     }
                     // Not conquered
                     else{
+                        graphics2D.setColor(Color.lightGray);
+                        graphics2D.fillPolygon(shape);
+                        // Border should be black though
+                        graphics2D.setColor(Color.BLACK);
                         graphics2D.drawPolygon(shape.xpoints,shape.ypoints,shape.npoints);
                     }
                 }

@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,8 @@ public class Territorium {
     private boolean isConquered = false;
     private String conqueredBy = Constants.NONE;
     private int numberOfArmies = 0;
+    // Label for displaying number of current troops
+    JLabel armiesView = new JLabel(String.valueOf(this.numberOfArmies));
 
     public Territorium(String name) {
         this.name = name;
@@ -78,5 +81,13 @@ public class Territorium {
 
     public void setNumberOfArmies(int numberOfArmies) {
         this.numberOfArmies = numberOfArmies;
+    }
+
+    public JLabel getArmiesView() {
+        return armiesView;
+    }
+
+    public void setArmiesViewText(String text) {
+        this.armiesView.setText(text);
     }
 }

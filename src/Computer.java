@@ -1,4 +1,3 @@
-import java.awt.event.ComponentAdapter;
 import java.util.List;
 
 /**
@@ -36,6 +35,16 @@ public class Computer {
                 // Set the infoLabel to empty
                 AllThoseTerritories.window.setInfoLabelText("");
                 // No need to redraw window, ^^^^^^^^^^^^^^ does that
+            }
+            // Check if all territories are conquered, if yes begin conquer phase
+            boolean allconq = true;
+            for(int i = 0; i < GameElements.TERRITORIA.size(); i++){
+                if(!GameElements.TERRITORIA.get(GameElements.COUNTRIES.get(i)).isConquered())
+                    allconq = false;
+            }
+            if(allconq){
+                GameElements.gamePhase = "conquer";
+                break;
             }
         }
     }

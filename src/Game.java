@@ -25,19 +25,26 @@ public class Game implements MouseListener {
                 Point p = source.getMousePosition();
 
                 // Fire
-                if(player.pick(GameElements.COUNTRIES, p)){// Only if he has clicked inside a territory
+                int checkClick = player.pick(GameElements.COUNTRIES, p);
+                if(checkClick == 1){// Only if he has clicked inside a territory
                     // Redraw window
                     AllThoseTerritories.window.repaint();
 
                     // Computer's turn
                     computer.pick(GameElements.COUNTRIES);
                 }
+                else if(checkClick == 2){
+                    // Enemy T selected. Tell user to click a free territory
+                    AllThoseTerritories.window.setInfoLabelText(Constants.OPPONENTSTERRITORY);
+                }
                 else{
                     // Tell user to click inside a territory
-                    AllThoseTerritories.window.setInfoLabelText(Constants.CLICKTERRITORY);
+                    AllThoseTerritories.window.setInfoLabelText(Constants.OUTSIDETERRITORY);
                 }
 
                 break;
+
+            case "conquer":
 
         }
 
