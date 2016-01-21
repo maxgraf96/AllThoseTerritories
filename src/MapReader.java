@@ -60,20 +60,13 @@ public class MapReader {
         for (int index = 0; ; index++) {
             if (line.charAt(index) == ' ') {
                 String word = line.substring(0, index); //Gets the first word(or set of numbers) without the space after it
-                if(index != line.length() - 1){
                     // Everything
                     line.delete(0, index + 1); // deletes the word from the line with the space after it
-                    return word;
-                }else {
-
-                    // Last item
-                    line.delete(0, index); // deletes the word from the line with the space after it
-                    line.deleteCharAt(0);
                     return word;
                 }
             }
         }
-    }
+
 
     public String readName(StringBuilder line) {
         /** Method Explanation **
@@ -87,14 +80,10 @@ public class MapReader {
         while(charCheck >= 'A' && charCheck <= 'Z'){ // Checks if the first character in the line is a letter
             String currentWord = readWord(line);
             name += name.equals("") ?  currentWord : " " + currentWord;
-            if(line == null || line.toString().equals(""))
+            if(line.toString().equals(""))
                 return name;
-
-            if(!line.toString().equals(""))
-                charCheck = line.charAt(0);
             else
-                break;
-
+                charCheck = line.charAt(0);
         } return name;
     }
 
@@ -118,12 +107,11 @@ public class MapReader {
                 isXcoordinate = true;
                 Coordinates coords = new Coordinates(Integer.parseInt(x), Integer.parseInt(y));
                 coordinatesList.add(coords);
-
             }
-            if(!line.toString().equals(""))
-                charCheck = line.charAt(0);
-            else
+            if(line.toString().equals(""))
                 break;
+            else
+                charCheck = line.charAt(0);
         }
     }
 
@@ -183,7 +171,7 @@ public class MapReader {
                 case "neighbors-of":
                     countryName = readName(line);
                     String neighbourName = "";
-                    while (line != null && !line.toString().equals("")) {
+                    while (!line.toString().equals("")) {
                         readWord(line);
                         neighbourName = readName(line);
                         territoriumHashMap.get(countryName).addNeighbour(territoriumHashMap.get(neighbourName));
@@ -194,7 +182,7 @@ public class MapReader {
                     Continent current = new Continent(continentName);
                     current.setBonus(Integer.parseInt(readWord(line)));
 
-                    while (line != null && !line.toString().equals("")) {
+                    while (!line.toString().equals("")) {
                         readWord(line);// cuts the " : " and " - " out of the line
                         countryName = readName(line);
                         current.addTerritorium(territoriumHashMap.get(countryName));
