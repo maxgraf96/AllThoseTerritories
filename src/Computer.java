@@ -53,27 +53,19 @@ public class Computer {
                 // Show message that all territories have been selected and start the game
                 AllThoseTerritories.window.getConquerIntroPanel().setVisible(true);
 
-                // Start
-                enforce();
+                // Start enforcements
+                AllThoseTerritories.window.getGame().startEnforcements();
 
                 break;
             }
         }
     }
 
-    public void enforce(){
-        this.enforcements = calcEnforcements();
-        int bk = 7;
-
-        AllThoseTerritories.window.infoLabel.setText("You can now enforce your territories. You have "
-                + GameElements.playerEnforcements + " to choose from. Choose wisely.");
-        GameElements.turn = true;
-    }
-
     // Calculate enforcements
-    private int calcEnforcements(){
+    public int calcEnforcements(){
         int territories = 0;
         int bonus = 0;
+        int enforcements;
         for (String continentname : GameElements.CNAMES) {
 
             Continent current = GameElements.CONTINENTS.get(continentname);
@@ -88,6 +80,11 @@ public class Computer {
             if(all)
                 bonus += current.getBonus();
         }
-        return (territories / 3 + bonus);
+
+        enforcements = (territories / 3 + bonus);
+        // Put enforcements in player variable
+        this.enforcements = enforcements;
+        // Return
+        return enforcements;
     }
 }

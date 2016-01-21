@@ -16,6 +16,16 @@ public class Game implements MouseListener, MouseMotionListener {
     // Constructor
     public Game(){}
 
+    public void startEnforcements(){
+        // Assign enforcements
+        player.enforcements = player.calcEnforcements();
+        computer.enforcements = computer.calcEnforcements();
+
+        // Display info
+        AllThoseTerritories.window.setInfoLabelText("You can now enforce your territories. You have " +
+                + player.getEnforcements() + ". Choose wisely.");
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
 

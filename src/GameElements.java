@@ -21,7 +21,4 @@ public class GameElements {
     public static String conquerPhase = Constants.ENFORCE;
 
     public static boolean turn = true; // True if your turn, false if computer's turn
-
-    // Test
-    public static int playerEnforcements = 0;
 }

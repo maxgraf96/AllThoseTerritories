@@ -7,6 +7,9 @@ import javax.swing.*;
 //Extend JFrame so we can use this as a window
 public class UI extends JFrame {
 
+    // Game mechanics
+    Game game = new Game();
+
     // Label for displaying information
     JLabel infoLabel = new JLabel("Info");
     // Label for displaying current T when hoverin over
@@ -53,9 +56,9 @@ public class UI extends JFrame {
 
         // Add listener for mouse clicks
         // For clicks
-        myWorld.addMouseListener(new Game());
+        myWorld.addMouseListener(game);
         // For hovering
-        myWorld.addMouseMotionListener(new Game());
+        myWorld.addMouseMotionListener(game);
 
         // Add Panel for confirming reinforcements
         myWorld.add(enforcePanel);
@@ -103,6 +106,10 @@ public class UI extends JFrame {
     public void setCurrentTLabelText(String newtext) {
         this.currentTLabel.setText(newtext);
         repaint();
+    }
+
+    public Game getGame(){
+        return this.game;
     }
 
     public EnforcePanel getEnforcePanel() {

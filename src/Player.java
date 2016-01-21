@@ -48,25 +48,26 @@ public class Player {
                 allconq = false;
         }
         if(allconq){// All continents are conquered
-            // Start Enforcements
+            // Set game phases
             GameElements.gamePhase = Constants.CONQUER;
             GameElements.conquerPhase = Constants.ENFORCE;
+
+            // Start enforcements
+            AllThoseTerritories.window.getGame().startEnforcements();
         }
 
         // Player didn't click inside a territory. Has to click again
         return 0;
     }
 
-    public void enforce(){
+    public void enforce(Point point){
 
-        this.enforcements = calcEnforcements();
-        GameElements.turn = false;
     }
-
     // Calculate enforcements
-    private int calcEnforcements(){
+    public int calcEnforcements(){
         int territories = 0;
         int bonus = 0;
+        int enforcements;
         for (String continentname : GameElements.CNAMES) {
 
             Continent current = GameElements.CONTINENTS.get(continentname);
@@ -82,9 +83,11 @@ public class Player {
                 bonus += current.getBonus();
         }
 
-        // Test
-        GameElements.playerEnforcements = territories / 3 + bonus;
-        return (territories / 3 + bonus);
+        enforcements = (territories / 3 + bonus);
+        // Put enforcements in player variable
+        this.enforcements = enforcements;
+        // Return
+        return enforcements;
     }
 
     public String getName() {
