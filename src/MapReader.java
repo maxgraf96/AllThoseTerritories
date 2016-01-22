@@ -32,7 +32,7 @@ public class MapReader {
         // Counter for line numbers in HashMap
         int counter = 0;
 
-        BufferedReader br = new BufferedReader(new FileReader("Resources/Maps/africa.map"));
+        BufferedReader br = new BufferedReader(new FileReader("Resources/Maps/world.map"));
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
 

@@ -16,6 +16,7 @@ public class ConquerIntroPanel extends JPanel {
     public ConquerIntroPanel(){
         this.setBounds(Constants.WIDTH / 3, Constants.HEIGHT -500, 400, 80);
         this.setLayout(new FlowLayout());
+        this.setBorder(BorderFactory.createLineBorder(Color.black));
 
         this.info.setBounds(50, 50, 260, 20);
         this.confirm.setBounds(50, 50, 80, 20);

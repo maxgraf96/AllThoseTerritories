@@ -33,6 +33,9 @@ public class Computer {
                 // SUCCESS
                 success = true;
 
+                // Update territoriesCount
+                this.territoriesCount++;
+
                 // Player's turn
                 GameElements.turn = !GameElements.turn;
                 // Set the infoLabel to empty
@@ -46,19 +49,31 @@ public class Computer {
                     allconq = false;
             }
             if(allconq){
-                // Set game phases
-                GameElements.gamePhase = Constants.CONQUER;
-                GameElements.conquerPhase = Constants.ENFORCE;
-
                 // Show message that all territories have been selected and start the game
                 AllThoseTerritories.window.getConquerIntroPanel().setVisible(true);
 
                 // Start enforcements
-                AllThoseTerritories.window.getGame().startEnforcements();
+                AllThoseTerritories.window.getGame().startEnforcementPhase();
 
                 break;
             }
         }
+    }
+
+    public void enforce(List<String> countries){
+        for (int i = 0; i < GameElements.COUNTRIES.size(); i++) {
+            Territorium current = GameElements.TERRITORIA.get(GameElements.COUNTRIES.get(i));
+            if(current.getConqueredBy() == name) {
+                if (shouldEnforce()) {
+                    // Update armies
+                    current.setNumberOfArmies(current.getNumberOfArmies() + howMany());
+                    // Update label over capital city
+                    current.getArmiesView().setText(String.valueOf(current.getNumberOfArmies()));
+                }
+            }
+        }
+
+        AllThoseTerritories.window.getGame().startAttackPhase();
     }
 
     // Calculate enforcements
@@ -66,16 +81,26 @@ public class Computer {
         int territories = 0;
         int bonus = 0;
         int enforcements;
-        for (String continentname : GameElements.CNAMES) {
 
+        // Here you need two loops: one that loops through all the territories and one that loops through
+        // all the continents. Because if you play on e.g. africa.map you would get no territories.
+        // 1st
+        for(String country : GameElements.COUNTRIES){
+            Territorium current = GameElements.TERRITORIA.get(country);
+            if(current.getConqueredBy().equals(name))
+                territories++;
+
+        }
+        // 2nd
+        // Only for checking boni
+        for (String continentname : GameElements.CNAMES) {
             Continent current = GameElements.CONTINENTS.get(continentname);
             boolean all = true;
 
             for(Territorium cT : current.getTerritoria()){
-                if(cT.getConqueredBy().equals(name)){
-                    territories++;
+                if(!cT.getConqueredBy().equals(name)){
+                    all = false;
                 }
-                else all = false;
             }
             if(all)
                 bonus += current.getBonus();
@@ -86,5 +111,17 @@ public class Computer {
         this.enforcements = enforcements;
         // Return
         return enforcements;
+    }
+
+    // Should computer enforce?
+    private boolean shouldEnforce(){
+        int range = (int) (Math.random() * 10000);
+        return range > 5000;
+    }
+
+    private int howMany(){
+        int number = (int) (Math.random() * this.enforcements);
+        this.enforcements -= number;
+        return number;
     }
 }

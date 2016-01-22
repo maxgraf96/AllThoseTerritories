@@ -30,7 +30,6 @@ public class AllThoseTerritories extends JFrame {
         Game game = new Game();
 
         // for testing and info
-        HashMap<String, Territorium> asdf = GameElements.TERRITORIA;
         int bk = 7;
     }
 
