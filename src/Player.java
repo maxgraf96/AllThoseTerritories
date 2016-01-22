@@ -7,9 +7,9 @@ import java.util.List;
 public class Player {
 
     // Fields
-    String name = Constants.PLAYER;
+     String name = Constants.PLAYER;
 
-    int territoriesCount = 0;
+    int territoriesCount = 0;// Not used atm
 
     int enforcements = 0;
 
@@ -20,21 +20,17 @@ public class Player {
     public int pick(List<String> countries, Point p) {
         for (int i = 0; i < countries.size(); i++) {
             Territorium current = GameElements.TERRITORIA.get(countries.get(i));
-            for (int j = 0; j < current.getShapes().size(); j++) {
-                if(current.getShapes().get(j).contains(p.getX(),p.getY())){
+            for (Shape shape : current.getShapes()) {
+                if(shape.contains(p.getX(),p.getY())){
                     if(!current.isConquered()) {
-                        current.setConquered(true);
-                        current.setConqueredBy(name);
-                        current.setNumberOfArmies(1);
-                        // Update territoriesCount
-                        this.territoriesCount++;
+                       current.conquer(1,name);
                         // Change Label
                         current.getArmiesView().setText(String.valueOf(current.getNumberOfArmies()));
                         return 1;
                     }
-                    else if(current.isConquered() && current.getConqueredBy() == Constants.COMPUTER)
+                    else if(current.getConqueredBy().equals(Constants.COMPUTER))
                         return 2;
-                    else if(current.isConquered() && current.getConqueredBy() == Constants.PLAYER)
+                    else if(current.getConqueredBy().equals(Constants.PLAYER))
                         return 3;
                 }
             }

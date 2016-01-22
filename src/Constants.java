@@ -19,7 +19,7 @@ public class Constants{
     public static final String OPPONENTSTERRITORY = "You have clicked an enemy territory. Please select another area.";
     public static final String YOURTERRITORY = "You already have control over this territory. Please select another one.";
 
-    public static final int ARMIESVIEWWIDTH = 10;
+    public static final int ARMIESVIEWWIDTH = 20;
     public static final int ARMIESVIEWHEIGHT = 10;
 
     public static final String PICK = "pick";

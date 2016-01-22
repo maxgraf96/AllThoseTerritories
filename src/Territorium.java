@@ -27,24 +27,12 @@ public class Territorium {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public List<Territorium> getNeighbors() {
         return neighbours;
     }
 
-    public void setNeighbors(List<Territorium> neighbors) {
-        this.neighbours = neighbors;
-    }
-
     public List<Polygon> getShapes() {
         return shapes;
-    }
-
-    public void setShapes(List<Polygon> shapes) {
-        this.shapes = shapes;
     }
 
     public void addShape(Polygon polygon){this.shapes.add(polygon);}
@@ -61,6 +49,13 @@ public class Territorium {
 
     public boolean isConquered() {
         return isConquered;
+    }
+
+    public void conquer(int numberOfArmies, String conquerer){
+        if(!isConquered)this.setConquered(true);
+        this.setConqueredBy(conquerer);
+        this.setNumberOfArmies(1);
+
     }
 
     public void setConquered(boolean conquered) {

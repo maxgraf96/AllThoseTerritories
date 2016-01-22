@@ -20,12 +20,9 @@ public class Computer {
         boolean success = false;
         while(!success){
             String country = countries.get((int) (Math.random() * countries.size()));
-            if(!GameElements.TERRITORIA.get(country).isConquered()) {
-                // Set conquered true
-                GameElements.TERRITORIA.get(country).setConquered(true);
-                // Set conqueredBy to computer
-                GameElements.TERRITORIA.get(country).setConqueredBy(name);
-                GameElements.TERRITORIA.get(country).setNumberOfArmies(1);
+            Territorium current = GameElements.TERRITORIA.get(country);
+            if(!current.isConquered()) {
+               current.conquer(1,name);
                 // Change Label
                 GameElements.TERRITORIA.get(country).getArmiesView()
                         .setText(String.valueOf(GameElements.TERRITORIA.get(country).getNumberOfArmies()));
