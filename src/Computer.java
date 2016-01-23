@@ -39,24 +39,6 @@ public class Computer {
                 AllThoseTerritories.window.setInfoLabelText("");
                 // No need to redraw window, ^^^^^^^^^^^^^^ does that
             }
-
-/*
-            // Check if all territories are conquered, if yes begin conquer phase
-            boolean allconq = true;
-            for(int i = 0; i < GameElements.TERRITORIA.size(); i++){
-                if(!GameElements.TERRITORIA.get(GameElements.COUNTRIES.get(i)).isConquered())
-                    allconq = false;
-            }
-            if(allconq){
-                // Show message that all territories have been selected and start the game
-                AllThoseTerritories.window.getConquerIntroPanel().setVisible(true);
-
-                // Start enforcements
-                AllThoseTerritories.window.getGame().startEnforcementPhase();
-
-                break;
-
-            }*/
         }
     }
 

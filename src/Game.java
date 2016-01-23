@@ -71,11 +71,11 @@ public class Game implements MouseListener, MouseMotionListener {
         switch (GameElements.gamePhase) {
             case Constants.PICK:
                 // Fire
-                player.pick(GameElements.COUNTRIES, point);
+                 boolean successfullyPicked = player.pick(GameElements.COUNTRIES, point);
 
                 // Only if he has clicked inside a territory
                 // Computer's turn
-
+                if (successfullyPicked)
                 computer.pick(GameElements.COUNTRIES);
                 // Check if all territories are conquered, if yes begin conquer phase
                 if (checkAllTerrConquered()) {
@@ -86,25 +86,6 @@ public class Game implements MouseListener, MouseMotionListener {
                     AllThoseTerritories.window.getGame().startEnforcementPhase();
                 }
                 break;
-        /*
-
-                else if(state == 2){
-                    // Enemy T selected. Tell user to click a free territory
-                    AllThoseTerritories.window.setInfoLabelText(Constants.OPPONENTSTERRITORY);
-                }
-                else if(state == 3){
-                    // Your T selected. Tell user to select another territory
-                    AllThoseTerritories.window.setInfoLabelText(Constants.YOURTERRITORY);
-                }
-                else{
-                    // Tell user to click inside a territory
-                    AllThoseTerritories.window.setInfoLabelText(Constants.OUTSIDETERRITORY);
-                }
-
-                    break;
-                }
-               */
-
 
             // The conquer phase needs to be broken down into various sub-phases
                     case Constants.ENFORCE:

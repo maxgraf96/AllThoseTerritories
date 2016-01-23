@@ -18,7 +18,7 @@ public class Player {
     }
 
     // 0 => no territory selected, 1 => success, 2 => opponent's territory, 3 => already yours
-    public void pick(List<String> countries, Point p) {
+    public boolean pick(List<String> countries, Point p) {
         for (int i = 0; i < countries.size(); i++) {
             Territorium current = GameElements.TERRITORIA.get(countries.get(i));
             for (Shape shape : current.getShapes()) {
@@ -27,18 +27,25 @@ public class Player {
                         current.conquer(1, name);
                         // Change Label
                         current.getArmiesView().setText(String.valueOf(current.getNumberOfArmies()));
+                        return true;
                     } else if (current.getConqueredBy().equals(Constants.COMPUTER)) {
                         // Enemy T selected. Tell user to click a free territory
                         AllThoseTerritories.window.setInfoLabelText(Constants.OPPONENTSTERRITORY);
+                        return false;
                     } else if (current.getConqueredBy().equals(Constants.PLAYER)) {
                         // Your T selected. Tell user to select another territory
                         AllThoseTerritories.window.setInfoLabelText(Constants.YOURTERRITORY);
-                    } else   // Player didn't click inside a territory. Has to click again
-                        AllThoseTerritories.window.setInfoLabelText(Constants.OUTSIDETERRITORY);
+                        return false;
+                    }
                 }
             }
-        }
+        }// Player didn't click inside a territory. Has to click again
+            AllThoseTerritories.window.setInfoLabelText(Constants.OUTSIDETERRITORY);
+            return false;
     }
+
+
+
 
 
 
