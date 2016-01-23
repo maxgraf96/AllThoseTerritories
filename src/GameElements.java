@@ -18,8 +18,6 @@ public class GameElements {
 
     // To know which game phase you're in
     public static String gamePhase = Constants.PICK;
-    public static String conquerPhase = Constants.ENFORCE;
-    public static String attackPhase = Constants.ATTACK;
 
     public static boolean turn = true; // True if your turn, false if computer's turn
 }

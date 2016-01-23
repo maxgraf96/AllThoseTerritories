@@ -18,8 +18,7 @@ public class Game implements MouseListener, MouseMotionListener {
 
     public void startEnforcementPhase(){
         // Set game phases
-        GameElements.gamePhase = Constants.CONQUER;
-        GameElements.conquerPhase = Constants.ENFORCE;
+        GameElements.gamePhase = Constants.ENFORCE;
 
         // Assign enforcements
         player.enforcements += player.calcEnforcements();
@@ -40,7 +39,6 @@ public class Game implements MouseListener, MouseMotionListener {
     public void startAttackPhase(){
         // Set game phases
         GameElements.gamePhase = Constants.CONQUER;
-        GameElements.conquerPhase = Constants.ATTACK;
 
         // To be continued
     }
@@ -70,15 +68,26 @@ public class Game implements MouseListener, MouseMotionListener {
         Point point = e.getPoint();
         int state;
 
-        switch (GameElements.gamePhase){
+        switch (GameElements.gamePhase) {
             case Constants.PICK:
                 // Fire
-                state = player.pick(GameElements.COUNTRIES, point);
+                player.pick(GameElements.COUNTRIES, point);
 
-                if(state == 1){// Only if he has clicked inside a territory
-                    // Computer's turn
-                    computer.pick(GameElements.COUNTRIES);
+                // Only if he has clicked inside a territory
+                // Computer's turn
+
+                computer.pick(GameElements.COUNTRIES);
+                // Check if all territories are conquered, if yes begin conquer phase
+                if (checkAllTerrConquered()) {
+                    // Show message that all territories have been selected and start the game
+                    AllThoseTerritories.window.getConquerIntroPanel().setVisible(true);
+
+                    // Start enforcements
+                    AllThoseTerritories.window.getGame().startEnforcementPhase();
                 }
+                break;
+        /*
+
                 else if(state == 2){
                     // Enemy T selected. Tell user to click a free territory
                     AllThoseTerritories.window.setInfoLabelText(Constants.OPPONENTSTERRITORY);
@@ -92,11 +101,12 @@ public class Game implements MouseListener, MouseMotionListener {
                     AllThoseTerritories.window.setInfoLabelText(Constants.OUTSIDETERRITORY);
                 }
 
-                break;
+                    break;
+                }
+               */
+
 
             // The conquer phase needs to be broken down into various sub-phases
-            case Constants.CONQUER:
-                switch (GameElements.conquerPhase){
                     case Constants.ENFORCE:
                         // Show dialog
                         // No double dialogs
@@ -127,9 +137,7 @@ public class Game implements MouseListener, MouseMotionListener {
                         break;
                 }
 
-                break;
         }
-    }
 
     // MouseMotionListener methods
     @Override
@@ -172,5 +180,14 @@ public class Game implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
+    }
+
+    public boolean checkAllTerrConquered (){
+        //Returns true if all territories have an owner
+        for (int i = 0; i < GameElements.TERRITORIA.size(); i++) {
+            if (!GameElements.TERRITORIA.get(GameElements.COUNTRIES.get(i)).isConquered())
+                return false;
+        }
+        return true;
     }
 }

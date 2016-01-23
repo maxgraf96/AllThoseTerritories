@@ -35,4 +35,5 @@ public class Continent {
     public int getBonus(){
         return this.bonus;
     }
+
 }

@@ -55,7 +55,6 @@ public class Territorium {
         if(!isConquered)this.setConquered(true);
         this.setConqueredBy(conquerer);
         this.setNumberOfArmies(1);
-
     }
 
     public void setConquered(boolean conquered) {
@@ -85,4 +84,6 @@ public class Territorium {
     public void setArmiesViewText(String text) {
         this.armiesView.setText(text);
     }
+
+
 }

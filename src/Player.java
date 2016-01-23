@@ -7,55 +7,40 @@ import java.util.List;
 public class Player {
 
     // Fields
-     String name = Constants.PLAYER;
+    String name = Constants.PLAYER;
 
     int territoriesCount = 0;// Not used atm
 
     int enforcements = 0;
 
     // Constructor
-    public Player(){}
+    public Player() {
+    }
 
     // 0 => no territory selected, 1 => success, 2 => opponent's territory, 3 => already yours
-    public int pick(List<String> countries, Point p) {
+    public void pick(List<String> countries, Point p) {
         for (int i = 0; i < countries.size(); i++) {
             Territorium current = GameElements.TERRITORIA.get(countries.get(i));
             for (Shape shape : current.getShapes()) {
-                if(shape.contains(p.getX(),p.getY())){
-                    if(!current.isConquered()) {
-                       current.conquer(1,name);
+                if (shape.contains(p.getX(), p.getY())) {
+                    if (!current.isConquered()) {
+                        current.conquer(1, name);
                         // Change Label
                         current.getArmiesView().setText(String.valueOf(current.getNumberOfArmies()));
-                        return 1;
-                    }
-                    else if(current.getConqueredBy().equals(Constants.COMPUTER))
-                        return 2;
-                    else if(current.getConqueredBy().equals(Constants.PLAYER))
-                        return 3;
+                    } else if (current.getConqueredBy().equals(Constants.COMPUTER)) {
+                        // Enemy T selected. Tell user to click a free territory
+                        AllThoseTerritories.window.setInfoLabelText(Constants.OPPONENTSTERRITORY);
+                    } else if (current.getConqueredBy().equals(Constants.PLAYER)) {
+                        // Your T selected. Tell user to select another territory
+                        AllThoseTerritories.window.setInfoLabelText(Constants.YOURTERRITORY);
+                    } else   // Player didn't click inside a territory. Has to click again
+                        AllThoseTerritories.window.setInfoLabelText(Constants.OUTSIDETERRITORY);
                 }
             }
         }
-
-        // Check if all territories are conquered, if yes begin conquer phase
-        boolean allconq = true;
-        for(int i = 0; i < GameElements.TERRITORIA.size(); i++){
-            if(!GameElements.TERRITORIA.get(GameElements.COUNTRIES.get(i)).isConquered())
-                allconq = false;
-        }
-        if(allconq){// All continents are conquered
-            // Show message that all territories have been selected and start the game
-            AllThoseTerritories.window.getConquerIntroPanel().setVisible(true);
-
-            // Start enforcements
-            AllThoseTerritories.window.getGame().startEnforcementPhase();
-        }
-
-        // Make computer's turn
-        GameElements.turn = false;
-
-        // Player didn't click inside a territory. Has to click again
-        return 0;
     }
+
+
 
     // 0 => no territory selected, 1 => success, 2 => opponent's territory
     public void enforce(Point point, int state){
