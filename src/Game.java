@@ -43,22 +43,26 @@ public class Game implements MouseListener, MouseMotionListener {
         // To be continued
     }
 
-    // // 1 => success, 2 => opponent's territory, 3 => clicked outside territory
-    public int checkClick(Point point){
+    // returns true when clicked on a territory currently owned by the player
+    public boolean checkClick(Point point){
         for (int i = 0; i < GameElements.COUNTRIES.size(); i++) {
             Territorium current = GameElements.TERRITORIA.get(GameElements.COUNTRIES.get(i));
             for (int j = 0; j < current.getShapes().size(); j++) {
                 if (current.getShapes().get(j).contains(point.x, point.y)) {
-                    if (current.getConqueredBy().equals(player.name))
-                        return 1;
+                    if (current.getConqueredBy().equals(player.name)){
+                        AllThoseTerritories.window.setInfoLabelText("");
+                        return true;
+                    }
                     // Not your territory
-                    else if (!current.getConqueredBy().equals(player.name))
-                        return 2;
+                    else if (!current.getConqueredBy().equals(player.name)){
+                        return false;
+                    }
+
                 }
             }
         }
-        // Not clicked inside a territory
-        return 3;
+        // Not clicked inside a territory, Don't tell the player - he should know by now
+        return false;
     }
 
     @Override
@@ -71,12 +75,12 @@ public class Game implements MouseListener, MouseMotionListener {
         switch (GameElements.gamePhase) {
             case Constants.PICK:
                 // Fire
-                 boolean successfullyPicked = player.pick(GameElements.COUNTRIES, point);
+                boolean successfullyPicked = player.pick(GameElements.COUNTRIES, point);
 
                 // Only if he has clicked inside a territory
                 // Computer's turn
                 if (successfullyPicked)
-                computer.pick(GameElements.COUNTRIES);
+                    computer.pick(GameElements.COUNTRIES);
                 // Check if all territories are conquered, if yes begin conquer phase
                 if (checkAllTerrConquered()) {
                     // Show message that all territories have been selected and start the game
@@ -88,37 +92,28 @@ public class Game implements MouseListener, MouseMotionListener {
                 break;
 
             // The conquer phase needs to be broken down into various sub-phases
-                    case Constants.ENFORCE:
-                        // Show dialog
-                        // No double dialogs
-                        if(!AllThoseTerritories.window.getEnforcePanel().isVisible()){
-                            state = checkClick(point);
-                            if(state == 1){
-                                // Only if he has clicked inside a territory
-                                AllThoseTerritories.window.getEnforcePanel().setVisible(true);
-                                AllThoseTerritories.window.getEnforcePanel().init(point, player);
-                            }
-                            else if(state == 2){
-                                // Enemy T selected. Tell user to click a free territory
-                                AllThoseTerritories.window.setInfoLabelText(Constants.OPPONENTSTERRITORY);
-                            }
-                            else if(state == 3){
-                                // Don't tell user to click inside a territory - he should know by now
-                            }
-                        }
-                        else {
-                            AllThoseTerritories.window.getEnforcePanel().setVisible(false);
-                            /*Reset is really important. Because we don't actually add and remove the
-                            * enforcePanel every time(we just hide and show it) the counters would still increase
-                            * so if you openend it three times and closed it three times you would be adding 3
-                            * armies, even if you only had 1!*/
-                            AllThoseTerritories.window.getEnforcePanel().reset();
-                        }
-
-                        break;
+            case Constants.ENFORCE:
+                // Show dialog
+                // No double dialogs
+                if (!AllThoseTerritories.window.getEnforcePanel().isVisible()) {
+                    if (checkClick(point)) {
+                        // Only if he has clicked inside a territory
+                        AllThoseTerritories.window.getEnforcePanel().setVisible(true);
+                        AllThoseTerritories.window.getEnforcePanel().init(point, player);
+                    }
+                } else {
+                    AllThoseTerritories.window.getEnforcePanel().setVisible(false);
+                    /*Reset is really important. Because we don't actually add and remove the
+                    * enforcePanel every time(we just hide and show it) the counters would still increase
+                    * so if you openend it three times and closed it three times you would be adding 3
+                    * armies, even if you only had 1!*/
+                    AllThoseTerritories.window.getEnforcePanel().reset();
                 }
 
+                break;
         }
+
+    }
 
     // MouseMotionListener methods
     @Override

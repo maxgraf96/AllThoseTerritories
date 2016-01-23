@@ -17,7 +17,7 @@ public class Player {
     public Player() {
     }
 
-    // 0 => no territory selected, 1 => success, 2 => opponent's territory, 3 => already yours
+  // returns true only if it successfully picks a territory
     public boolean pick(List<String> countries, Point p) {
         for (int i = 0; i < countries.size(); i++) {
             Territorium current = GameElements.TERRITORIA.get(countries.get(i));
@@ -43,11 +43,6 @@ public class Player {
             AllThoseTerritories.window.setInfoLabelText(Constants.OUTSIDETERRITORY);
             return false;
     }
-
-
-
-
-
 
     // 0 => no territory selected, 1 => success, 2 => opponent's territory
     public void enforce(Point point, int state){
