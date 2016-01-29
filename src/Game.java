@@ -18,29 +18,25 @@ public class Game implements MouseListener, MouseMotionListener {
 
     public void startEnforcementPhase(){
         // Set game phases
-        GameElements.gamePhase = Constants.ENFORCE;
+        GameElements.gamePhase = Constants.PHASE_ENFORCE;
 
         // Assign enforcements
         player.enforcements += player.calcEnforcements();
         computer.enforcements += computer.calcEnforcements();
 
         // Display info
-        AllThoseTerritories.window.setInfoLabelText("You can now enforce your territories. You have " +
+        Main.window.setInfoLabelText("You can now enforce your territories. You have " +
                 + player.getEnforcements() + ". Choose wisely.");
 
-        // Enable currently available enforcements label
-        AllThoseTerritories.window.currentEnforcementsLabel.setText(String.valueOf(player.enforcements));
-        AllThoseTerritories.window.currentEnforcementsLabel.setVisible(true);
-
         // Enable enforcement done button
-        AllThoseTerritories.window.getConfirmEnforcements().setVisible(true);
+        Main.window.getConfirmEnforcements().setVisible(true);
     }
 
     public void startAttackPhase(){
         // Set game phases
-        GameElements.gamePhase = Constants.CONQUER;
+        GameElements.gamePhase = Constants.PHASE_ATTACKFROM;
 
-        // To be continued
+
     }
 
     // returns true when clicked on a territory currently owned by the player
@@ -50,7 +46,7 @@ public class Game implements MouseListener, MouseMotionListener {
             for (int j = 0; j < current.getShapes().size(); j++) {
                 if (current.getShapes().get(j).contains(point.x, point.y)) {
                     if (current.getConqueredBy().equals(player.name)){
-                        AllThoseTerritories.window.setInfoLabelText("");
+                        Main.window.setInfoLabelText("");
                         return true;
                     }
                     // Not your territory
@@ -70,46 +66,84 @@ public class Game implements MouseListener, MouseMotionListener {
 
         // Get click coords
         Point point = e.getPoint();
-        int state;
+
+        // Source territory in attack phase
+        Territorium sourceTerritory = new Territorium("");
 
         switch (GameElements.gamePhase) {
-            case Constants.PICK:
+            case Constants.PHASE_PICK:
                 // Fire
                 boolean successfullyPicked = player.pick(GameElements.COUNTRIES, point);
 
                 // Only if he has clicked inside a territory
                 // Computer's turn
-                if (successfullyPicked)
+                if (successfullyPicked && !checkAllTerrConquered())
                     computer.pick(GameElements.COUNTRIES);
                 // Check if all territories are conquered, if yes begin conquer phase
                 if (checkAllTerrConquered()) {
                     // Show message that all territories have been selected and start the game
-                    AllThoseTerritories.window.getConquerIntroPanel().setVisible(true);
+                    Main.window.getConquerIntroPanel().setVisible(true);
 
                     // Start enforcements
-                    AllThoseTerritories.window.getGame().startEnforcementPhase();
+                    Main.window.getGame().startEnforcementPhase();
                 }
                 break;
 
-            // The conquer phase needs to be broken down into various sub-phases
-            case Constants.ENFORCE:
+            case Constants.PHASE_ENFORCE:
                 // Show dialog
                 // No double dialogs
-                if (!AllThoseTerritories.window.getEnforcePanel().isVisible()) {
+                if (!Main.window.getEnforcePanel().isVisible()) {
                     if (checkClick(point)) {
                         // Only if he has clicked inside a territory
-                        AllThoseTerritories.window.getEnforcePanel().setVisible(true);
-                        AllThoseTerritories.window.getEnforcePanel().init(point, player);
+                        Main.window.getEnforcePanel().setVisible(true);
+                        Main.window.getEnforcePanel().init(point, player);
                     }
                 } else {
-                    AllThoseTerritories.window.getEnforcePanel().setVisible(false);
+                    Main.window.getEnforcePanel().setVisible(false);
                     /*Reset is really important. Because we don't actually add and remove the
                     * enforcePanel every time(we just hide and show it) the counters would still increase
                     * so if you openend it three times and closed it three times you would be adding 3
                     * armies, even if you only had 1!*/
-                    AllThoseTerritories.window.getEnforcePanel().reset();
+                    Main.window.getEnforcePanel().reset();
                 }
 
+                break;
+
+            case Constants.PHASE_ATTACKFROM:
+                Territorium current = HelperMethods.getTerritoriumOnClick(point);
+                if(current == null)
+                    Main.window.setInfoLabelText(Constants.OUTSIDETERRITORY);
+                else if(current.getConqueredBy().equals(player.getName())){
+                    if(current.getNumberOfArmies() < 2)
+                        Main.window.setInfoLabelText(Constants.INSUFFICIENTTROOPS);
+                    else if(!current.canAttack())
+                        Main.window.setInfoLabelText(Constants.NONEIGHBORSTOATTACK);
+                    else {
+                        GameElements.gamePhase = Constants.PHASE_CHOOSETARGET;
+                        sourceTerritory = current;
+
+                        // Set label
+                        Main.window.setInfoLabelText(Constants.PHASE_CHOOSETARGET);
+                    }
+                }
+                else if(current.getConqueredBy().equals(computer.getName())){
+                    Main.window.setInfoLabelText(Constants.OPPONENTSTERRITORY);
+                }
+                break;
+
+            case Constants.PHASE_CHOOSETARGET:
+                Territorium target = HelperMethods.getTerritoriumOnClick(point);
+                if(target == null)
+                    Main.window.setInfoLabelText(Constants.OUTSIDETERRITORY);
+                else if(target.getConqueredBy().equals(player.getName())){
+                    Main.window.setInfoLabelText(Constants.NOVALIDTARGET);
+                }
+                else if(target.getConqueredBy().equals(computer.getName())){
+                    if(!Main.window.getAttackPanel().isVisible()) {
+                        Main.window.getAttackPanel().setVisible(true);
+                        Main.window.getAttackPanel().init(point, player, sourceTerritory);
+                    }
+                }
                 break;
         }
 
@@ -125,12 +159,12 @@ public class Game implements MouseListener, MouseMotionListener {
 
             for(Polygon shape : territorium.getShapes()){
                 if(shape.contains(p)){
-                    AllThoseTerritories.window.setCurrentTLabelText(territorium.getName());
+                    Main.window.setCurrentTLabelText(territorium.getName());
                 }
             }
         }
 
-        AllThoseTerritories.window.repaint();
+        Main.window.repaint();
     }
 
     @Override

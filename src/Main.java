@@ -5,7 +5,7 @@ import java.util.HashMap;
 /**
  * Created by max on 12.01.16.
  */
-public class AllThoseTerritories extends JFrame {
+public class Main extends JFrame {
 
     public static UI window;
     public static void main(String[] args) throws IOException {

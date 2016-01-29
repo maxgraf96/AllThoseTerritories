@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -18,8 +17,6 @@ public class UI extends JFrame {
     JLabel infoLabel = new JLabel("Info");
     // Label for displaying current T when hoverin over
     JLabel currentTLabel = new JLabel("Territory");
-    // Label for displaying number of enforcements
-    JLabel currentEnforcementsLabel = new JLabel("0");
     // Label for background - does not work at the moment
     // JLabel background = new JLabel(new ImageIcon("Resources/Images/BackgroundSea.png"));
 
@@ -28,6 +25,8 @@ public class UI extends JFrame {
     EnforcePanel enforcePanel = new EnforcePanel();
     // Panel for starting the game after picking
     ConquerIntroPanel conquerIntroPanel = new ConquerIntroPanel();
+    // Panel for attacking territories
+    AttackPanel attackPanel = new AttackPanel();
 
     // Buttons
     JButton confirmEnforcements = new JButton("Done enforcing");
@@ -51,9 +50,6 @@ public class UI extends JFrame {
         // Configure label for displaying current territory(lower right corner)
         currentTLabel.setBounds(this.getWidth() - 180, this.getHeight() - 70, 160, 20);
 
-        // Configure enforcePanel
-        enforcePanel.setLayout(new FlowLayout());
-
         // Configure confirmEnforcements
         confirmEnforcements.setBounds(this.getWidth() - 360, this.getHeight() - 70, 160, 30);
         confirmEnforcements.addActionListener(new ActionListener() {
@@ -61,7 +57,7 @@ public class UI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // Computer's turn
                 // Next phase is started from computer's enforce method
-                AllThoseTerritories.window.getGame().computer.enforce(GameElements.COUNTRIES);
+                Main.window.getGame().computer.enforce(GameElements.COUNTRIES);
                 // Hide button
                 confirmEnforcements.setVisible(false);
             }
@@ -93,14 +89,15 @@ public class UI extends JFrame {
         myWorld.add(infoLabel);
         // Add current territory label
         myWorld.add(currentTLabel);
-        // Add currently available enforcements label
-        myWorld.add(currentEnforcementsLabel);
 
         // Add views displaying current troops
         addArmiesLabels();
 
         // Add button for ending enforcement
         myWorld.add(confirmEnforcements);
+
+        // Add AttackPanel
+        myWorld.add(attackPanel);
 
         // Add to JFrame
         add(myWorld);
@@ -150,5 +147,9 @@ public class UI extends JFrame {
 
     public ConquerIntroPanel getConquerIntroPanel() {
         return conquerIntroPanel;
+    }
+
+    public AttackPanel getAttackPanel() {
+        return attackPanel;
     }
 }

@@ -17,7 +17,7 @@ public class GameElements {
     public static HashMap<String, Continent> CONTINENTS = new HashMap<>();
 
     // To know which game phase you're in
-    public static String gamePhase = Constants.PICK;
+    public static String gamePhase = Constants.PHASE_PICK;
 
     public static boolean turn = true; // True if your turn, false if computer's turn
 }

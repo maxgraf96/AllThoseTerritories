@@ -39,7 +39,7 @@ public class WorldMap extends JPanel {
                     }
                     else if(current.getName().equals("Kamchatka")){
                         graphics2D.drawLine(current.getCapitalcity().getX(),current.getCapitalcity().getY(),
-                                AllThoseTerritories.window.getWidth(), current.getCapitalcity().getY());
+                                Main.window.getWidth(), current.getCapitalcity().getY());
                     }
                 }
                 else {// All other lines

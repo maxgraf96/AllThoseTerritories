@@ -30,38 +30,35 @@ public class Player {
                         return true;
                     } else if (current.getConqueredBy().equals(Constants.COMPUTER)) {
                         // Enemy T selected. Tell user to click a free territory
-                        AllThoseTerritories.window.setInfoLabelText(Constants.OPPONENTSTERRITORY);
+                        Main.window.setInfoLabelText(Constants.OPPONENTSTERRITORY);
                         return false;
                     } else if (current.getConqueredBy().equals(Constants.PLAYER)) {
                         // Your T selected. Tell user to select another territory
-                        AllThoseTerritories.window.setInfoLabelText(Constants.YOURTERRITORY);
+                        Main.window.setInfoLabelText(Constants.YOURTERRITORY);
                         return false;
                     }
                 }
             }
         }// Player didn't click inside a territory. Has to click again
-            AllThoseTerritories.window.setInfoLabelText(Constants.OUTSIDETERRITORY);
+            Main.window.setInfoLabelText(Constants.OUTSIDETERRITORY);
             return false;
     }
 
-    // 0 => no territory selected, 1 => success, 2 => opponent's territory
-    public void enforce(Point point, int state){
-        if(state == 1){// Only if he has clicked inside a territory which he owns
+    public void enforce(Point point, boolean selectedYours){
+        if(selectedYours){// Only if he has clicked inside a territory which he owns
             // Change labels
-            AllThoseTerritories.window.setInfoLabelText("You can now enforce your territories. You have " +
+            Main.window.setInfoLabelText("You can now enforce your territories. You have " +
                     + this.getEnforcements() + ". Choose wisely.");
         }
-        else if(state == 2){
-            // Enemy T selected. Tell user to click his own territory
-            AllThoseTerritories.window.setInfoLabelText(Constants.OPPONENTSTERRITORY);
-            // Hide dialog
-            //AllThoseTerritories.window.remove(AllThoseTerritories.window.getEnforcePanel());
-        }
         else{
-            // Tell user to click inside a territory
-            AllThoseTerritories.window.setInfoLabelText(Constants.OUTSIDETERRITORY);
-            // Hide dialog
-            //AllThoseTerritories.window.remove(AllThoseTerritories.window.getEnforcePanel());
+            if(HelperMethods.getTerritoriumOnClick(point) == null) {
+                // Tell user to click inside a territory
+                Main.window.setInfoLabelText(Constants.OUTSIDETERRITORY);
+            }
+            else {
+                // Enemy T selected. Tell user to click his own territory
+                Main.window.setInfoLabelText(Constants.OPPONENTSTERRITORY);
+            }
         }
     }
 

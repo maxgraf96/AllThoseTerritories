@@ -54,7 +54,16 @@ public class Territorium {
     public void conquer(int numberOfArmies, String conquerer){
         if(!isConquered)this.setConquered(true);
         this.setConqueredBy(conquerer);
-        this.setNumberOfArmies(1);
+        this.setNumberOfArmies(numberOfArmies);
+    }
+
+    public boolean canAttack(){
+        boolean canAttack = false;
+        for(Territorium neighbor : this.getNeighbors()){
+            if(!neighbor.getConqueredBy().equals(this.getConqueredBy()))
+                canAttack = true;
+        }
+        return canAttack;
     }
 
     public void setConquered(boolean conquered) {

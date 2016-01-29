@@ -6,7 +6,7 @@ import java.util.List;
 public class Computer {
 
     // Fields
-    String name = Constants.COMPUTER;
+    private String name = Constants.COMPUTER;
 
     int territoriesCount = 0;// Not used atm
 
@@ -36,26 +36,31 @@ public class Computer {
                 // Player's turn
                 GameElements.turn = !GameElements.turn;
                 // Set the infoLabel to empty
-                AllThoseTerritories.window.setInfoLabelText("");
+                Main.window.setInfoLabelText("");
                 // No need to redraw window, ^^^^^^^^^^^^^^ does that
             }
         }
     }
 
     public void enforce(List<String> countries){
-        for (int i = 0; i < GameElements.COUNTRIES.size(); i++) {
-            Territorium current = GameElements.TERRITORIA.get(GameElements.COUNTRIES.get(i));
-            if(current.getConqueredBy() == name) {
+        boolean successfullyEnforced = false;
+        while(!successfullyEnforced) {
+            int random = (int) (Math.random() * GameElements.COUNTRIES.size() - 1);
+            Territorium current = GameElements.TERRITORIA.get(GameElements.COUNTRIES.get(random));
+            if(current.getConqueredBy() == name){
                 if (shouldEnforce()) {
                     // Update armies
                     current.setNumberOfArmies(current.getNumberOfArmies() + howMany());
                     // Update label over capital city
                     current.getArmiesView().setText(String.valueOf(current.getNumberOfArmies()));
+
+                    if(enforcements == 0)
+                        successfullyEnforced = true;
                 }
             }
         }
 
-        AllThoseTerritories.window.getGame().startAttackPhase();
+        Main.window.getGame().startAttackPhase();
     }
 
     // Calculate enforcements
@@ -88,7 +93,7 @@ public class Computer {
                 bonus += current.getBonus();
         }
 
-        enforcements = (territories / 3 + bonus);
+        enforcements = (territories / 3 + bonus) < 3 ? 1 : (territories / 3 + bonus);
         // Put enforcements in player variable
         this.enforcements = enforcements;
         // Return
@@ -102,8 +107,12 @@ public class Computer {
     }
 
     private int howMany(){
-        int number = (int) (Math.random() * this.enforcements);
+        int number = (int) ((Math.random() + 0.1) * this.enforcements);
         this.enforcements -= number;
         return number;
+    }
+
+    public String getName() {
+        return name;
     }
 }

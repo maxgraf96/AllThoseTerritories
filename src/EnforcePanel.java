@@ -16,6 +16,12 @@ public class EnforcePanel extends JPanel {
     JButton minus = new JButton("-");
     JLabel number = new JLabel("0");
 
+    // Listeners
+    ActionListener minusListener;
+    ActionListener plusListener;
+    ActionListener confirmListener;
+    ActionListener cancelListener;
+
     int tempTerritories = 0; // For init() method
 
     // Constructor
@@ -39,12 +45,6 @@ public class EnforcePanel extends JPanel {
 
         this.setVisible(false);
     }
-
-    // Listeners
-    ActionListener minusListener;
-    ActionListener plusListener;
-    ActionListener confirmListener;
-    ActionListener cancelListener;
 
     // Methods
     public void init(Point point, Player player){
@@ -88,34 +88,25 @@ public class EnforcePanel extends JPanel {
         confirmListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                for (int i = 0; i < GameElements.COUNTRIES.size(); i++) {
-                    Territorium current = GameElements.TERRITORIA.get(GameElements.COUNTRIES.get(i));
-                    for (int j = 0; j < current.getShapes().size(); j++) {
-                        if (current.getShapes().get(j).contains(point.x, point.y)) {
-                            if (current.getConqueredBy().equals(player.name)) {
-                                // Get number of reinforcements
-                                int reinforcements = Integer.parseInt(number.getText());
-                                // Add troops
-                                current.setNumberOfArmies(current.getNumberOfArmies() + reinforcements);
+                Territorium current = HelperMethods.getTerritoriumOnClick(point);
+                if (current.getConqueredBy().equals(player.name)) {
+                    // Get number of reinforcements
+                    int reinforcements = Integer.parseInt(number.getText());
+                    // Add troops
+                    current.setNumberOfArmies(current.getNumberOfArmies() + reinforcements);
 
-                                // Update enforcements
-                                player.enforcements -= reinforcements;
+                    // Update enforcements
+                    player.enforcements -= reinforcements;
 
-                                // Update label over capital city
-                                current.getArmiesView().setText(String.valueOf(current.getNumberOfArmies()));
+                    // Update label over capital city
+                    current.getArmiesView().setText(String.valueOf(current.getNumberOfArmies()));
 
-                                AllThoseTerritories.window.getGame().player.enforce(point, 1);
-                            }
-                        }
-
-                        // Not your territory
-                        else if (!current.getConqueredBy().equals(player.name))
-                            AllThoseTerritories.window.getGame().player.enforce(point, 2);
-                            // Not clicked inside a territory
-                        else
-                            AllThoseTerritories.window.getGame().player.enforce(point, 3);
-                    }
+                    Main.window.getGame().player.enforce(point, true);
                 }
+
+                // Not your territory
+                else
+                    Main.window.getGame().player.enforce(point, false);
 
                 // Always
                 reset();
