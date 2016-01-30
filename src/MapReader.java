@@ -32,7 +32,7 @@ public class MapReader {
         // Counter for line numbers in HashMap
         int counter = 0;
 
-        BufferedReader br = new BufferedReader(new FileReader("Resources/Maps/africa.map"));
+        BufferedReader br = new BufferedReader(new FileReader("Resources/Maps/world.map"));
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
 
@@ -66,7 +66,6 @@ public class MapReader {
                 }
             }
         }
-
 
     public String readName(StringBuilder line) {
         /** Method Explanation **
@@ -198,6 +197,33 @@ public class MapReader {
 
         // Make territories accessible from every part of the game
         GameElements.TERRITORIA = territoriumHashMap;
+
+        // "Assign neighbors"
+        assignNeighbors();
+    }
+
+    /*
+    Method explanation: If you look at a map file, you see that neighbor definitions are oneway.
+    Look at this:
+    neighbors-of North Africa : Congo - Egypt - East Africa
+    neighbors-of Egypt : East Africa
+    neighbors-of East Africa : Congo - South Africa
+    neighbors-of Congo : South Africa
+
+    Congo only has South Africa assigned as neighbor but if you look at the actual map, it MUST be possible
+    to attack e.g. East Africa from congo. This method assigns every territory ALL of its actual neighbors
+    while avoiding duplicates.
+     */
+    private void assignNeighbors(){
+        for (int i = 0; i < GameElements.COUNTRIES.size(); i++) {
+            Territorium current = GameElements.TERRITORIA.get(GameElements.COUNTRIES.get(i));
+            for (int j = 0; j < GameElements.COUNTRIES.size(); j++) {
+                Territorium compare = GameElements.TERRITORIA.get(GameElements.COUNTRIES.get(j));
+                if(compare.getNeighbors().contains(current) && !current.getNeighbors().contains(compare)){
+                    current.getNeighbors().add(compare);
+                }
+            }
+        }
     }
 
 }

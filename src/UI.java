@@ -27,9 +27,12 @@ public class UI extends JFrame {
     ConquerIntroPanel conquerIntroPanel = new ConquerIntroPanel();
     // Panel for attacking territories
     AttackPanel attackPanel = new AttackPanel();
+    // Panel for moving troops after successful conquer
+    PostConquerPanel postConquerPanel = new PostConquerPanel();
 
     // Buttons
-    JButton confirmEnforcements = new JButton("Done enforcing");
+    JButton confirmEnforcementsButton = new JButton("Done enforcing");
+    JButton endTurnButton = new JButton("End turn");
 
     // This method takes care of the most basic configuration of the main window - everything is CONFIGURED here
     public void init(){
@@ -50,19 +53,33 @@ public class UI extends JFrame {
         // Configure label for displaying current territory(lower right corner)
         currentTLabel.setBounds(this.getWidth() - 180, this.getHeight() - 70, 160, 20);
 
-        // Configure confirmEnforcements
-        confirmEnforcements.setBounds(this.getWidth() - 360, this.getHeight() - 70, 160, 30);
-        confirmEnforcements.addActionListener(new ActionListener() {
+        // Configure confirmEnforcementsButton
+        confirmEnforcementsButton.setBounds(this.getWidth() - 360, this.getHeight() - 70, 160, 30);
+        confirmEnforcementsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Computer's turn
                 // Next phase is started from computer's enforce method
                 Main.window.getGame().computer.enforce(GameElements.COUNTRIES);
                 // Hide button
-                confirmEnforcements.setVisible(false);
+                confirmEnforcementsButton.setVisible(false);
             }
         });
-        confirmEnforcements.setVisible(false);
+        confirmEnforcementsButton.setVisible(false);
+
+        // Configure endTurnButton
+        endTurnButton.setBounds(this.getWidth() - 360, this.getHeight() - 70, 160, 30);
+        endTurnButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Hide button
+                endTurnButton.setVisible(false);
+
+                // Computer's turn
+                Main.window.getGame().computer.attack();
+            }
+        });
+        endTurnButton.setVisible(false);
     }
 
     // Place our stuff(thats a method for itself) - everything is ADDED here
@@ -94,10 +111,16 @@ public class UI extends JFrame {
         addArmiesLabels();
 
         // Add button for ending enforcement
-        myWorld.add(confirmEnforcements);
+        myWorld.add(confirmEnforcementsButton);
+
+        // Add button for ending turn
+        myWorld.add(endTurnButton);
 
         // Add AttackPanel
         myWorld.add(attackPanel);
+
+        // Add PostConquerPanel
+        myWorld.add(postConquerPanel);
 
         // Add to JFrame
         add(myWorld);
@@ -141,8 +164,8 @@ public class UI extends JFrame {
         return this.game;
     }
 
-    public JButton getConfirmEnforcements() {
-        return confirmEnforcements;
+    public JButton getConfirmEnforcementsButton() {
+        return confirmEnforcementsButton;
     }
 
     public ConquerIntroPanel getConquerIntroPanel() {
@@ -151,5 +174,13 @@ public class UI extends JFrame {
 
     public AttackPanel getAttackPanel() {
         return attackPanel;
+    }
+
+    public PostConquerPanel getPostConquerPanel() {
+        return postConquerPanel;
+    }
+
+    public JButton getEndTurnButton() {
+        return endTurnButton;
     }
 }

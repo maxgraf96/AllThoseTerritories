@@ -66,6 +66,10 @@ public class Territorium {
         return canAttack;
     }
 
+    public boolean hasNeighbor(Territorium neighbor){
+        return this.getNeighbors().contains(neighbor);
+    }
+
     public void setConquered(boolean conquered) {
         isConquered = conquered;
     }
@@ -84,13 +88,15 @@ public class Territorium {
 
     public void setNumberOfArmies(int numberOfArmies) {
         this.numberOfArmies = numberOfArmies;
+        // Update the view
+        setArmiesViewText(String.valueOf(numberOfArmies));
     }
 
     public JLabel getArmiesView() {
         return armiesView;
     }
 
-    public void setArmiesViewText(String text) {
+    private void setArmiesViewText(String text) {
         this.armiesView.setText(text);
     }
 

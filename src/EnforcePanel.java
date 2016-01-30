@@ -56,7 +56,11 @@ public class EnforcePanel extends JPanel {
         number.setText(String.valueOf(tempTerritories));
 
         // Position at click
-        this.setBounds(point.x, point.y, 450, 70);
+        // If click is too near to the right border then draw it "on the left side"
+        if(point.x > Constants.WIDTH - 450)
+            this.setBounds(point.x - 450, point.y, 450, 70);
+        else
+            this.setBounds(point.x, point.y, 450, 70);
 
         //Add listeners
         minusListener = new  ActionListener() {

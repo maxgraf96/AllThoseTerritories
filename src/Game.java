@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -12,6 +13,15 @@ public class Game implements MouseListener, MouseMotionListener {
     // Players
     public Player player = new Player();
     public Computer computer = new Computer();
+
+    // Source territory in attack phase
+    Territorium sourceTerritory = new Territorium("");
+    Territorium targetTerritory;
+
+    // Fields for the once-movement
+    private boolean backAndForth = true;
+    private Territorium bAFTerritorium1;
+    private Territorium bAFTerritorium2;
 
     // Constructor
     public Game(){}
@@ -29,14 +39,15 @@ public class Game implements MouseListener, MouseMotionListener {
                 + player.getEnforcements() + ". Choose wisely.");
 
         // Enable enforcement done button
-        Main.window.getConfirmEnforcements().setVisible(true);
+        Main.window.getConfirmEnforcementsButton().setVisible(true);
     }
 
     public void startAttackPhase(){
         // Set game phases
         GameElements.gamePhase = Constants.PHASE_ATTACKFROM;
 
-
+        // Make endTurnButton visible
+        Main.window.getEndTurnButton().setVisible(true);
     }
 
     // returns true when clicked on a territory currently owned by the player
@@ -66,9 +77,6 @@ public class Game implements MouseListener, MouseMotionListener {
 
         // Get click coords
         Point point = e.getPoint();
-
-        // Source territory in attack phase
-        Territorium sourceTerritory = new Territorium("");
 
         switch (GameElements.gamePhase) {
             case Constants.PHASE_PICK:
@@ -111,38 +119,82 @@ public class Game implements MouseListener, MouseMotionListener {
 
             case Constants.PHASE_ATTACKFROM:
                 Territorium current = HelperMethods.getTerritoriumOnClick(point);
-                if(current == null)
+                if (current == null)
                     Main.window.setInfoLabelText(Constants.OUTSIDETERRITORY);
-                else if(current.getConqueredBy().equals(player.getName())){
-                    if(current.getNumberOfArmies() < 2)
+                else if (current.getConqueredBy().equals(player.getName())) {
+                    if (current.getNumberOfArmies() < 2)
                         Main.window.setInfoLabelText(Constants.INSUFFICIENTTROOPS);
-                    else if(!current.canAttack())
-                        Main.window.setInfoLabelText(Constants.NONEIGHBORSTOATTACK);
                     else {
                         GameElements.gamePhase = Constants.PHASE_CHOOSETARGET;
                         sourceTerritory = current;
 
                         // Set label
-                        Main.window.setInfoLabelText(Constants.PHASE_CHOOSETARGET);
+                        Main.window.setInfoLabelText(Constants.CHOOSEENEMYT);
                     }
-                }
-                else if(current.getConqueredBy().equals(computer.getName())){
+                } else if (current.getConqueredBy().equals(computer.getName())) {
                     Main.window.setInfoLabelText(Constants.OPPONENTSTERRITORY);
                 }
                 break;
 
             case Constants.PHASE_CHOOSETARGET:
-                Territorium target = HelperMethods.getTerritoriumOnClick(point);
-                if(target == null)
-                    Main.window.setInfoLabelText(Constants.OUTSIDETERRITORY);
-                else if(target.getConqueredBy().equals(player.getName())){
-                    Main.window.setInfoLabelText(Constants.NOVALIDTARGET);
-                }
-                else if(target.getConqueredBy().equals(computer.getName())){
-                    if(!Main.window.getAttackPanel().isVisible()) {
-                        Main.window.getAttackPanel().setVisible(true);
-                        Main.window.getAttackPanel().init(point, player, sourceTerritory);
+                targetTerritory = HelperMethods.getTerritoriumOnClick(point);
+                if(SwingUtilities.isLeftMouseButton(e)) {
+                    if (targetTerritory == null)
+                        Main.window.setInfoLabelText(Constants.OUTSIDETERRITORY);
+                    else if (targetTerritory.getConqueredBy().equals(player.getName())) {
+                        Main.window.setInfoLabelText(Constants.NOVALIDTARGET);
+                    } else if (targetTerritory.getConqueredBy().equals(computer.getName())) {
+                        // Check if the clicked territory actually is a neighbor of source
+                        if (targetTerritory.hasNeighbor(sourceTerritory)) {
+                            if (!Main.window.getAttackPanel().isVisible()) {
+                                Main.window.getAttackPanel().setVisible(true);
+                                Main.window.getAttackPanel().init(point, player, sourceTerritory);
+                            }
+                        } else
+                            Main.window.setInfoLabelText(Constants.NOTNEIGHBORS);
                     }
+                }
+                else if(SwingUtilities.isRightMouseButton(e)){
+                    if(backAndForth){
+                        bAFTerritorium1 = sourceTerritory;
+                        bAFTerritorium2 = targetTerritory;
+                        backAndForth = false;
+                    }
+                    if((bAFTerritorium1 == sourceTerritory && bAFTerritorium2 == targetTerritory)
+                            || (bAFTerritorium1 == targetTerritory && bAFTerritorium2 == sourceTerritory)) {
+                        if (targetTerritory == null)
+                            Main.window.setInfoLabelText(Constants.OUTSIDETERRITORY);
+                        else if (targetTerritory.getConqueredBy().equals(player.getName())
+                                && targetTerritory.hasNeighbor(sourceTerritory)) {
+                            // Action. Luckily, we can use the PostConquerPanel here
+                            if (!Main.window.getPostConquerPanel().isVisible()) {
+                                Main.window.getPostConquerPanel().setVisible(true);
+                                Main.window.getPostConquerPanel().init(point, player, sourceTerritory);
+                            }
+                        } else if (targetTerritory.getConqueredBy().equals(player.getName())
+                                && !targetTerritory.hasNeighbor(sourceTerritory)) {
+                            Main.window.setInfoLabelText(Constants.NOTNEIGHBORS);
+                        } else if (targetTerritory.getConqueredBy().equals(computer.getName())) {
+                            Main.window.setInfoLabelText(Constants.NOVALIDTARGET);
+                        }
+                    }
+                    else
+                        Main.window.setInfoLabelText(Constants.CANTMOVE);
+
+                }
+                break;
+
+            // The phase after conquering a territory, where you can take troops from the source T with you
+            case Constants.PHASE_POSTCONQUER:
+                Territorium conquered = HelperMethods.getTerritoriumOnClick(point);
+                if(targetTerritory.getName().equals(conquered.getName())){
+                    if (!Main.window.getPostConquerPanel().isVisible()) {
+                        Main.window.getPostConquerPanel().setVisible(true);
+                        Main.window.getPostConquerPanel().init(point, player, sourceTerritory);
+                    }
+                }
+                else{
+                    GameElements.gamePhase = Constants.PHASE_ATTACKFROM;
                 }
                 break;
         }
@@ -169,7 +221,7 @@ public class Game implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseDragged(MouseEvent e) {
-
+        mouseClicked(e);
     }
 
     // Rest MouseListener methods
