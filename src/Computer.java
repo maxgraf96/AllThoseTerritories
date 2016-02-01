@@ -46,7 +46,7 @@ public class Computer {
     public void enforce(List<String> countries){
         boolean successfullyEnforced = false;
         while(!successfullyEnforced) {
-            int random = (int) (Math.random() * GameElements.COUNTRIES.size() - 1);
+            int random = (int) (Math.random() * (GameElements.COUNTRIES.size() - 1));
             Territorium current = GameElements.TERRITORIA.get(GameElements.COUNTRIES.get(random));
             if(current.getConqueredBy() == name){
                 if (shouldEnforce()) {
@@ -70,8 +70,6 @@ public class Computer {
 
         int availableTroops;
         int enemyTroops;
-        int lostTroops;
-        int enemyLostTroops; // Enemy here is player
 
         for (int k = 1; k <= attackCounter; k++) {
             for (int i = 0; i < GameElements.COUNTRIES.size(); i++) {
@@ -93,211 +91,15 @@ public class Computer {
                         if (enemyTerritory != null) {
                             availableTroops = current.getNumberOfArmies();
                             enemyTroops = enemyTerritory.getNumberOfArmies();
-                            lostTroops = 0;
-                            enemyLostTroops = 0;
 
                             // Get computer attack strength
-                            if (availableTroops > 3)
-                                availableTroops = 3;
-                            else if (availableTroops == 3)
-                                availableTroops = 2;
-                            else if (availableTroops == 2)
-                                availableTroops = 1;
-                            else if (availableTroops == 1)
-                                availableTroops = 0;
-
-                            // Get enemy defense strenght
-                            if (enemyTroops > 1)
-                                enemyTroops = 2;
-                            else if (enemyTroops == 1)
-                                enemyTroops = 1;
-                            else
-                                enemyTroops = 0;
-
-                            // One dice per attacking/defending army
-                            // We have 6 cases: 3 vs. 2, 3 vs. 1, 2 vs. 2, 2 vs. 1, 1 vs. 2, 1 vs. 1
-                            // We need a switch here because we need to be able to break the loop when done to avoid multiple
-                            // attacks when we want only one!
-                            switch (availableTroops) {
-                                case 3:
-                                    if (enemyTroops == 2) {
-                                        int[] attackDice = new int[3];
-                                        int[] defenseDice = new int[2];
-
-                                        // Roll the dice
-                                        for (int j = 0; i < attackDice.length; i++) {
-                                            attackDice[j] = (int) (Math.random() * 6 + 1);
-                                        }
-                                        for (int j = 0; i < defenseDice.length; i++) {
-                                            defenseDice[j] = (int) (Math.random() * 6 + 1);
-                                        }
-
-                                        // Sort
-                                        Arrays.sort(attackDice);
-                                        Arrays.sort(defenseDice);
-
-                                        // compare from best to worst
-                                        if (compare(attackDice[2], defenseDice[1])) {
-                                            enemyTroops--;
-                                            enemyLostTroops++;
-                                        } else {
-                                            availableTroops--;
-                                            lostTroops++;
-                                        }
-                                        if (compare(attackDice[1], defenseDice[0])) {
-                                            enemyTroops--;
-                                            enemyLostTroops++;
-                                        } else {
-                                            availableTroops--;
-                                            lostTroops++;
-                                        }
-
-                                        break;
-                                    }
-                                    if (enemyTroops == 1) {
-                                        int[] attackDice = new int[3];
-                                        int defenseDice;
-
-                                        // Roll the dice
-                                        for (int j = 0; i < attackDice.length; i++) {
-                                            attackDice[j] = (int) (Math.random() * 6 + 1);
-                                        }
-                                        defenseDice = (int) (Math.random() * 6 + 1);
-
-                                        // Sort
-                                        Arrays.sort(attackDice);
-
-                                        // compare
-                                        if (compare(attackDice[2], defenseDice)) {
-                                            enemyTroops--;
-                                            enemyLostTroops++;
-                                        } else {
-                                            availableTroops--;
-                                            lostTroops++;
-                                        }
-                                    }
-                                    break;
-                                case 2:
-                                    if (enemyTroops == 2) {
-                                        int[] attackDice = new int[2];
-                                        int[] defenseDice = new int[2];
-
-                                        // Roll the dice
-                                        for (int j = 0; i < attackDice.length; i++) {
-                                            attackDice[j] = (int) (Math.random() * 6 + 1);
-                                        }
-                                        for (int j = 0; i < defenseDice.length; i++) {
-                                            defenseDice[j] = (int) (Math.random() * 6 + 1);
-                                        }
-
-                                        // Sort
-                                        Arrays.sort(attackDice);
-                                        Arrays.sort(defenseDice);
-
-                                        // compare from best to worst
-                                        if (compare(attackDice[1], defenseDice[1])) {
-                                            enemyTroops--;
-                                            enemyLostTroops++;
-                                        } else {
-                                            availableTroops--;
-                                            lostTroops++;
-                                        }
-                                        if (compare(attackDice[0], defenseDice[0])) {
-                                            enemyTroops--;
-                                            enemyLostTroops++;
-                                        } else {
-                                            availableTroops--;
-                                            lostTroops++;
-                                        }
-
-                                        break;
-                                    }
-                                    if (enemyTroops == 1) {
-                                        int[] attackDice = new int[2];
-                                        int defenseDice;
-
-                                        // Roll the dice
-                                        for (int j = 0; i < attackDice.length; i++) {
-                                            attackDice[j] = (int) (Math.random() * 6 + 1);
-                                        }
-                                        defenseDice = (int) (Math.random() * 6 + 1);
-
-                                        // Sort
-                                        Arrays.sort(attackDice);
-
-                                        // compare
-                                        if (compare(attackDice[1], defenseDice)) {
-                                            enemyTroops--;
-                                            enemyLostTroops++;
-                                        } else {
-                                            availableTroops--;
-                                            lostTroops++;
-                                        }
-                                    }
-                                    break;
-                                case 1:
-                                    if (enemyTroops == 2) {
-                                        int attackDice;
-                                        int[] defenseDice = new int[2];
-
-                                        // Roll the dice
-                                        attackDice = (int) (Math.random() * 6 + 1);
-                                        for (int j = 0; i < defenseDice.length; i++) {
-                                            defenseDice[j] = (int) (Math.random() * 6 + 1);
-                                        }
-
-                                        // Sort
-                                        Arrays.sort(defenseDice);
-
-                                        // compare
-                                        if (compare(attackDice, defenseDice[1])) {
-                                            enemyTroops--;
-                                            enemyLostTroops++;
-                                        } else {
-                                            availableTroops--;
-                                            lostTroops++;
-                                        }
-
-                                        break;
-                                    }
-                                    if (enemyTroops == 1) {
-                                        int attackDice;
-                                        int defenseDice;
-
-                                        // Roll the dice
-                                        attackDice = (int) (Math.random() * 6 + 1);
-                                        defenseDice = (int) (Math.random() * 6 + 1);
-
-                                        // compare
-                                        if (compare(attackDice, defenseDice)) {
-                                            enemyTroops--;
-                                            enemyLostTroops++;
-                                        } else {
-                                            availableTroops--;
-                                            lostTroops++;
-                                        }
-                                    }
-                                    break;
-                            }
+                            if (availableTroops > 3) availableTroops = 4;
+                            availableTroops -= 1;
+                            // Get enemy  player defense strength
+                            if (enemyTroops > 2) enemyTroops = 2;
 
                             // Attack done, if no troops left in attacked territory, move
-                            if(enemyTroops == 0){
-                                // Update conquered territory
-                                enemyTerritory.setConqueredBy(name);
-                                enemyTerritory.setNumberOfArmies(availableTroops);
-
-                                // Update source territory
-                                current.setNumberOfArmies(current.getNumberOfArmies() - availableTroops);
-
-                            }
-                            // Else you lose :(
-                            else{
-                                // Update enemy territory
-                                enemyTerritory.setNumberOfArmies(enemyTerritory.getNumberOfArmies() - enemyLostTroops);
-
-                                // Update source territory
-                                current.setNumberOfArmies(current.getNumberOfArmies() - lostTroops);
-                            }
+                           HelperMethods.attack(current, enemyTerritory,availableTroops,enemyTroops);
 
                             // Repaint
                             Main.window.repaint();
@@ -361,12 +163,12 @@ public class Computer {
 
     // Should computer enforce?
     private boolean shouldEnforce(){
-        int range = (int) (Math.random() * 10000);
-        return range > 5000;
+        int range = (int) (Math.random() * 101);
+        return range > 50;
     }
 
     private int howMany(){
-        int number = (int) ((Math.random() + 0.1) * this.enforcements);
+        int number = (int) (Math.random() * (this.enforcements+1));
         this.enforcements -= number;
         return number;
     }

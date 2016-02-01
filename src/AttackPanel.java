@@ -23,8 +23,7 @@ public class AttackPanel extends JPanel {
 
     int availableTroops;
     int enemyTroops;
-    int lostTroops = 0;
-    int enemyLostTroops = 0;
+
 
     // Constructor
     public AttackPanel(){
@@ -50,26 +49,15 @@ public class AttackPanel extends JPanel {
     public void init(Point point, Player player, Territorium sourceTerritory){
         // Get data
         Territorium enemyTerritory = HelperMethods.getTerritoriumOnClick(point);
+
         availableTroops = sourceTerritory.getNumberOfArmies();
         enemyTroops = enemyTerritory.getNumberOfArmies();
 
         // Get your attack strength
-        if(availableTroops > 3)
-            availableTroops = 3;
-        else if(availableTroops == 3)
-            availableTroops = 2;
-        else if(availableTroops == 2)
-            availableTroops = 1;
-        else if(availableTroops == 1)
-            availableTroops = 0;
-
-        // Get enemy defense strenght
-        if(enemyTroops > 1)
-            enemyTroops = 2;
-        else if(enemyTroops == 1)
-            enemyTroops = 1;
-        else
-            enemyTroops = 0;
+        if (availableTroops > 3) availableTroops = 4;
+        availableTroops -= 1;
+        // Get enemy defense strength
+        if (enemyTroops > 2) enemyTroops = 2;
 
         // Set numbers
         numbers.setText(String.valueOf(availableTroops));
@@ -86,42 +74,23 @@ public class AttackPanel extends JPanel {
         confirmListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                // Action!
-                attack();
-
-                // Attack done, if no troops left in attacked territory, move
-                if(enemyTroops == 0){
-                    // Update conquered territory
-                    enemyTerritory.setConqueredBy(player.getName());
-                    enemyTerritory.setNumberOfArmies(availableTroops);
-
-                    // Update source territory
-                    sourceTerritory.setNumberOfArmies(sourceTerritory.getNumberOfArmies() - availableTroops);
-
+                boolean success = HelperMethods.attack(sourceTerritory,enemyTerritory,availableTroops,enemyTroops);
+                if( (success)) {
                     // GamePhase to postConquer
                     // Only if you have sufficient troops
-                    if(sourceTerritory.getNumberOfArmies() > 1) {
+                    if (sourceTerritory.getNumberOfArmies() > 1) {
                         GameElements.gamePhase = Constants.PHASE_POSTCONQUER;
                         Main.window.setInfoLabelText(Constants.WANTPOSTCONQUER);
-                    }
-                    else {
+                    } else {
                         GameElements.gamePhase = Constants.PHASE_ATTACKFROM;
                         Main.window.setInfoLabelText(Constants.CHOOSEENEMYT);
                     }
                 }
-                // Else you lose :(
+                //Else you lose :(
                 else{
-                    // Update enemy territory
-                    enemyTerritory.setNumberOfArmies(enemyTerritory.getNumberOfArmies() - enemyLostTroops);
-
-                    // Update source territory
-                    sourceTerritory.setNumberOfArmies(sourceTerritory.getNumberOfArmies() - lostTroops);
-
                     // GamePhase to ATTACKFROM
                     GameElements.gamePhase = Constants.PHASE_ATTACKFROM;
                 }
-
                 // Repaint
                 Main.window.repaint();
                 // Always
@@ -131,6 +100,7 @@ public class AttackPanel extends JPanel {
 
             }
         };
+
         cancelListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -148,198 +118,10 @@ public class AttackPanel extends JPanel {
         this.setVisible(true);
     }
 
-    private void attack() {
-        // One dice per attacking/defending army
-        // We have 6 cases: 3 vs. 2, 3 vs. 1, 2 vs. 2, 2 vs. 1, 1 vs. 2, 1 vs. 1
-        // We need a switch here because we need to be able to break the loop when done to avoid multiple
-        // attacks when we want only one!
-        switch (availableTroops) {
-            case 3:
-                if (enemyTroops == 2) {
-                    int[] attackDice = new int[3];
-                    int[] defenseDice = new int[2];
-
-                    // Roll the dice
-                    for (int i = 0; i < attackDice.length; i++) {
-                        attackDice[i] = (int) (Math.random() * 6 + 1);
-                    }
-                    for (int i = 0; i < defenseDice.length; i++) {
-                        defenseDice[i] = (int) (Math.random() * 6 + 1);
-                    }
-
-                    // Sort
-                    Arrays.sort(attackDice);
-                    Arrays.sort(defenseDice);
-
-                    // compare from best to worst
-                    if (compare(attackDice[2], defenseDice[1])) {
-                        enemyTroops--;
-                        enemyLostTroops++;
-                    }
-                    else {
-                        availableTroops--;
-                        lostTroops++;
-                    }
-                    if(compare(attackDice[1], defenseDice[0])) {
-                        enemyTroops--;
-                        enemyLostTroops++;
-                    }
-                    else {
-                        availableTroops--;
-                        lostTroops++;
-                    }
-
-                    break;
-                }
-                if (enemyTroops == 1) {
-                    int[] attackDice = new int[3];
-                    int defenseDice;
-
-                    // Roll the dice
-                    for (int i = 0; i < attackDice.length; i++) {
-                        attackDice[i] = (int) (Math.random() * 6 + 1);
-                    }
-                    defenseDice = (int) (Math.random() * 6 + 1);
-
-                    // Sort
-                    Arrays.sort(attackDice);
-
-                    // compare
-                    if (compare(attackDice[2], defenseDice)) {
-                        enemyTroops--;
-                        enemyLostTroops++;
-                    }
-                    else {
-                        availableTroops--;
-                        lostTroops++;
-                    }
-                }
-                break;
-            case 2:
-                if (enemyTroops == 2) {
-                    int[] attackDice = new int[2];
-                    int[] defenseDice = new int[2];
-
-                    // Roll the dice
-                    for (int i = 0; i < attackDice.length; i++) {
-                        attackDice[i] = (int) (Math.random() * 6 + 1);
-                    }
-                    for (int i = 0; i < defenseDice.length; i++) {
-                        defenseDice[i] = (int) (Math.random() * 6 + 1);
-                    }
-
-                    // Sort
-                    Arrays.sort(attackDice);
-                    Arrays.sort(defenseDice);
-
-                    // compare from best to worst
-                    if (compare(attackDice[1], defenseDice[1])) {
-                        enemyTroops--;
-                        enemyLostTroops++;
-                    }
-                    else {
-                        availableTroops--;
-                        lostTroops++;
-                    }
-                    if(compare(attackDice[0], defenseDice[0])) {
-                        enemyTroops--;
-                        enemyLostTroops++;
-                    }
-                    else {
-                        availableTroops--;
-                        lostTroops++;
-                    }
-
-                    break;
-                }
-                if (enemyTroops == 1) {
-                    int[] attackDice = new int[2];
-                    int defenseDice;
-
-                    // Roll the dice
-                    for (int i = 0; i < attackDice.length; i++) {
-                        attackDice[i] = (int) (Math.random() * 6 + 1);
-                    }
-                    defenseDice = (int) (Math.random() * 6 + 1);
-
-                    // Sort
-                    Arrays.sort(attackDice);
-
-                    // compare
-                    if (compare(attackDice[1], defenseDice)) {
-                        enemyTroops--;
-                        enemyLostTroops++;
-                    }
-                    else {
-                        availableTroops--;
-                        lostTroops++;
-                    }
-                }
-                break;
-            case 1:
-                if (enemyTroops == 2) {
-                    int attackDice;
-                    int[] defenseDice = new int[2];
-
-                    // Roll the dice
-                    attackDice = (int) (Math.random() * 6 + 1);
-                    for (int i = 0; i < defenseDice.length; i++) {
-                        defenseDice[i] = (int) (Math.random() * 6 + 1);
-                    }
-
-                    // Sort
-                    Arrays.sort(defenseDice);
-
-                    // compare
-                    if (compare(attackDice, defenseDice[1])) {
-                        enemyTroops--;
-                        enemyLostTroops++;
-                    }
-                    else {
-                        availableTroops--;
-                        lostTroops++;
-                    }
-
-                    break;
-                }
-                if (enemyTroops == 1) {
-                    int attackDice;
-                    int defenseDice;
-
-                    // Roll the dice
-                    attackDice = (int) (Math.random() * 6 + 1);
-                    defenseDice = (int) (Math.random() * 6 + 1);
-
-                    // compare
-                    if (compare(attackDice, defenseDice)) {
-                        enemyTroops--;
-                        enemyLostTroops++;
-                    }
-                    else {
-                        availableTroops--;
-                        lostTroops++;
-                    }
-                }
-                break;
-        }
-    }
-
-    // True if player wins, false if computer wins
-    private boolean compare(int yours, int enemy){
-        if(yours > enemy)
-            return true;
-        if(yours < enemy)
-            return false;
-        if(yours == enemy)
-            return false;
-
-        return false;
-    }
     public void reset(){
         availableTroops = 0;
         enemyTroops = 0;
-        lostTroops = 0;
-        enemyLostTroops = 0;
+
 
         // Remove listeners - this is a MUST!
         confirm.removeActionListener(confirmListener);
