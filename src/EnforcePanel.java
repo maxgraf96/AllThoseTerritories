@@ -92,7 +92,7 @@ public class EnforcePanel extends JPanel {
         confirmListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Territorium current = HelperMethods.getTerritoriumOnClick(point);
+                Territorium current = HelperMethods.getTerritoriumFromPoint(point);
                 if (current.getConqueredBy().equals(player.name)) {
                     // Get number of reinforcements
                     int reinforcements = Integer.parseInt(number.getText());

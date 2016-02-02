@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 
 /**
  * Created by max on 29.01.16.
@@ -48,7 +47,7 @@ public class AttackPanel extends JPanel {
 
     public void init(Point point, Player player, Territorium sourceTerritory){
         // Get data
-        Territorium enemyTerritory = HelperMethods.getTerritoriumOnClick(point);
+        Territorium enemyTerritory = HelperMethods.getTerritoriumFromPoint(point);
 
         availableTroops = sourceTerritory.getNumberOfArmies();
         enemyTroops = enemyTerritory.getNumberOfArmies();

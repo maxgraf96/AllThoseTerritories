@@ -8,7 +8,7 @@ import java.util.HashMap;
 public class Main extends JFrame {
 
     public static UI window;
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException{
 
         // Read a map file
         MapReader mapReader = new MapReader();

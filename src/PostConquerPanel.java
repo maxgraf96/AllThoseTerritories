@@ -47,7 +47,7 @@ public class PostConquerPanel extends EnforcePanel {
             public void actionPerformed(ActionEvent e) {
 
                 // Move
-                Territorium target = HelperMethods.getTerritoriumOnClick(point);
+                Territorium target = HelperMethods.getTerritoriumFromPoint(point);
                 target.setNumberOfArmies(target.getNumberOfArmies() + tempTerritories);
                 sourceTerritory.setNumberOfArmies(sourceTerritory.getNumberOfArmies() - tempTerritories);
 
