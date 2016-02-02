@@ -18,6 +18,9 @@ public class Territorium {
     private int numberOfArmies = 0;
     // Label for displaying number of current troops
     JLabel armiesView = new JLabel(String.valueOf(this.numberOfArmies));
+    // Boolean for indicating hovered/selected state
+    private boolean isHovered = false;
+    private boolean isSelected = false;
 
     public Territorium(String name) {
         this.name = name;
@@ -100,5 +103,19 @@ public class Territorium {
         this.armiesView.setText(text);
     }
 
+    public boolean isHovered() {
+        return isHovered;
+    }
 
+    public void setHovered(boolean hovered) {
+        isHovered = hovered;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
 }

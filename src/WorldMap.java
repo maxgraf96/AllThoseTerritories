@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Created by max on 14.01.16.
  */
-public class WorldMap extends JPanel {
+public class WorldMap extends JLayeredPane {
 
     HashMap<String,Territorium> worldMap;
 
@@ -23,6 +23,17 @@ public class WorldMap extends JPanel {
         // Cast to Graphics2D for drawing features
         Graphics2D graphics2D = (Graphics2D) g;
 
+        // Base colors
+        Color playerColor = new Color(156, 228, 34);
+        Color computerColor = new Color(189, 3, 19);
+        Color freeColor = new Color(224, 224, 225);
+        Color oceanColor = new Color(155, 221, 255);
+
+        graphics2D.setColor(oceanColor);
+        graphics2D.fillRect(0,0,Constants.WIDTH,Constants.HEIGHT);
+
+        // Colors back to black
+        graphics2D.setColor(Color.BLACK);
         // Draw lines between capitals
         for(String country : GameElements.COUNTRIES){
             Territorium current = GameElements.TERRITORIA.get(country);
@@ -67,11 +78,16 @@ public class WorldMap extends JPanel {
                     // Deciding how to draw the shape based on state (conquered, free, etc.)
                     // Will continue to extend as we implement more and more mechanics
                     if(current.isConquered()){
+
                         // By whom
                         // Player
                         if(current.getConqueredBy().equals(Constants.PLAYER)){
-                            // Make background blue
-                            graphics2D.setColor(Color.BLUE);
+                            if(current.isHovered()){
+                                graphics2D.setColor(current.isSelected() ? playerColor.brighter().brighter() : playerColor.brighter());
+                            }
+                            else{
+                                graphics2D.setColor(current.isSelected() ? playerColor.brighter() : playerColor);
+                            }
                             graphics2D.fillPolygon(shape);
                             // Border should be black though
                             graphics2D.setColor(Color.BLACK);
@@ -79,8 +95,12 @@ public class WorldMap extends JPanel {
                         }
                         // Computer
                         else if(current.getConqueredBy().equals(Constants.COMPUTER)){
-                            // Make background red
-                            graphics2D.setColor(Color.RED);
+                            if(current.isHovered()){
+                                graphics2D.setColor(current.isSelected() ? computerColor.brighter().brighter() : computerColor.brighter());
+                            }
+                            else{
+                                graphics2D.setColor(current.isSelected() ? computerColor.brighter() : computerColor);
+                            }
                             graphics2D.fillPolygon(shape);
                             // Border should be black though
                             graphics2D.setColor(Color.BLACK);
@@ -89,7 +109,12 @@ public class WorldMap extends JPanel {
                     }
                     // Not conquered
                     else{
-                        graphics2D.setColor(Color.lightGray);
+                        if(current.isHovered()){
+                            graphics2D.setColor(current.isSelected() ? freeColor.brighter().brighter() : freeColor.brighter());
+                        }
+                        else{
+                            graphics2D.setColor(current.isSelected() ? freeColor.brighter() : freeColor);
+                        }
                         graphics2D.fillPolygon(shape);
                         // Border should be black though
                         graphics2D.setColor(Color.BLACK);

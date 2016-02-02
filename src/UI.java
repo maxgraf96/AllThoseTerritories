@@ -9,6 +9,9 @@ import java.awt.event.ActionListener;
 //Extend JFrame so we can use this as a window
 public class UI extends JFrame {
 
+    // World
+    WorldMap myWorld = new WorldMap();
+
     // Game mechanics
     Game game = new Game();
 
@@ -85,9 +88,6 @@ public class UI extends JFrame {
     // Place our stuff(thats a method for itself) - everything is ADDED here
     public void genesis(){
 
-        // Create our world
-        WorldMap myWorld = new WorldMap();
-
         // Don't use layout manager, we position our views manually
         myWorld.setLayout(null);
 
@@ -98,9 +98,9 @@ public class UI extends JFrame {
         myWorld.addMouseMotionListener(game);
 
         // Add Panel for confirming reinforcements
-        myWorld.add(enforcePanel);
+        myWorld.add(enforcePanel, new Integer(5));
         // Add Panel for starting the game after picking
-        myWorld.add(conquerIntroPanel);
+        myWorld.add(conquerIntroPanel, new Integer(5));
 
         // Add infoLabel
         myWorld.add(infoLabel);
@@ -117,10 +117,10 @@ public class UI extends JFrame {
         myWorld.add(endTurnButton);
 
         // Add AttackPanel
-        myWorld.add(attackPanel);
+        myWorld.add(attackPanel, new Integer(5));
 
         // Add PostConquerPanel
-        myWorld.add(postConquerPanel);
+        myWorld.add(postConquerPanel, new Integer(5));
 
         // Add to JFrame
         add(myWorld);
@@ -129,12 +129,15 @@ public class UI extends JFrame {
         setVisible(true);
     }
 
+    public void freeze(){
+        RepaintManager.currentManager(myWorld).markCompletelyClean(myWorld);
+    }
     private void addArmiesLabels(){
         for(String country : GameElements.COUNTRIES){
             Territorium current = GameElements.TERRITORIA.get(country);
             current.getArmiesView().setBounds(current.getCapitalcity().getX(), current.getCapitalcity().getY(),
                     Constants.ARMIESVIEWWIDTH, Constants.ARMIESVIEWHEIGHT);
-            add(current.getArmiesView());
+            myWorld.add(current.getArmiesView(), new Integer(1));
         }
     }
 
@@ -157,7 +160,6 @@ public class UI extends JFrame {
 
     public void setCurrentTLabelText(String newtext) {
         this.currentTLabel.setText(newtext);
-        repaint();
     }
 
     public Game getGame(){

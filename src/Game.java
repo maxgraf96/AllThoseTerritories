@@ -27,6 +27,7 @@ public class Game implements MouseListener, MouseMotionListener {
     public Game(){}
 
     public void startEnforcementPhase(){
+
         // Set game phases
         GameElements.gamePhase = Constants.PHASE_ENFORCE;
 
@@ -78,6 +79,13 @@ public class Game implements MouseListener, MouseMotionListener {
         // Get click coords
         Point point = e.getPoint();
 
+        unselectTerritorries();
+        // Select the territory, i.e. set isSelected to true
+        if(HelperMethods.getTerritoriumFromPoint(point) != null){
+            Territorium t = HelperMethods.getTerritoriumFromPoint(point);
+            t.setSelected(true);
+        }
+
         switch (GameElements.gamePhase) {
             case Constants.PHASE_PICK:
                 // Fire
@@ -118,7 +126,7 @@ public class Game implements MouseListener, MouseMotionListener {
                 break;
 
             case Constants.PHASE_ATTACKFROM:
-                Territorium current = HelperMethods.getTerritoriumOnClick(point);
+                Territorium current = HelperMethods.getTerritoriumFromPoint(point);
                 if (current == null)
                     Main.window.setInfoLabelText(Constants.OUTSIDETERRITORY);
                 else if (current.getConqueredBy().equals(player.getName())) {
@@ -137,7 +145,7 @@ public class Game implements MouseListener, MouseMotionListener {
                 break;
 
             case Constants.PHASE_CHOOSETARGET:
-                targetTerritory = HelperMethods.getTerritoriumOnClick(point);
+                targetTerritory = HelperMethods.getTerritoriumFromPoint(point);
                 if(SwingUtilities.isLeftMouseButton(e)) {
                     if (targetTerritory == null)
                         Main.window.setInfoLabelText(Constants.OUTSIDETERRITORY);
@@ -186,7 +194,7 @@ public class Game implements MouseListener, MouseMotionListener {
 
             // The phase after conquering a territory, where you can take troops from the source T with you
             case Constants.PHASE_POSTCONQUER:
-                Territorium conquered = HelperMethods.getTerritoriumOnClick(point);
+                Territorium conquered = HelperMethods.getTerritoriumFromPoint(point);
                 if(targetTerritory.getName().equals(conquered.getName())){
                     if (!Main.window.getPostConquerPanel().isVisible()) {
                         Main.window.getPostConquerPanel().setVisible(true);
@@ -206,12 +214,27 @@ public class Game implements MouseListener, MouseMotionListener {
     public void mouseMoved(MouseEvent e) {
         // Show territory's name in the lower right corner when hovering over it
         Point p = e.getPoint();
-        for(String country : GameElements.COUNTRIES){
-            Territorium territorium = GameElements.TERRITORIA.get(country);
 
-            for(Polygon shape : territorium.getShapes()){
-                if(shape.contains(p)){
-                    Main.window.setCurrentTLabelText(territorium.getName());
+        // Check if hovering the ocean
+        if(HelperMethods.getTerritoriumFromPoint(p) == null){
+            for (String country : GameElements.COUNTRIES){
+                Territorium t = GameElements.TERRITORIA.get(country);
+                t.setHovered(false);
+            }
+
+            // Set label to ocean
+            Main.window.setCurrentTLabelText(Constants.OCEAN);
+        }
+        else {
+            for (String country : GameElements.COUNTRIES) {
+                Territorium territorium = GameElements.TERRITORIA.get(country);
+                for (Polygon shape : territorium.getShapes()) {
+                    if (shape.contains(p)) {
+                        Main.window.setCurrentTLabelText(territorium.getName());
+
+                        // Highlight the hovered territory
+                        checkHovered(territorium, p);
+                    }
                 }
             }
         }
@@ -251,5 +274,27 @@ public class Game implements MouseListener, MouseMotionListener {
                 return false;
         }
         return true;
+    }
+
+    private void checkHovered(Territorium current, Point p){
+
+        current.setHovered(true);
+
+        for (String country : GameElements.COUNTRIES){
+            Territorium t = GameElements.TERRITORIA.get(country);
+            if(t.isHovered()){
+                for(Polygon poly : t.getShapes()){
+                    if(!poly.contains(p))
+                        t.setHovered(false);
+                }
+            }
+        }
+    }
+
+    private void unselectTerritorries(){
+        for (String country : GameElements.COUNTRIES){
+            Territorium current = GameElements.TERRITORIA.get(country);
+            current.setSelected(false);
+        }
     }
 }

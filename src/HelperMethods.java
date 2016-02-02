@@ -6,7 +6,7 @@ import java.util.Arrays;
  */
 public class HelperMethods {
 
-    public static Territorium getTerritoriumOnClick(Point point) {
+    public static Territorium getTerritoriumFromPoint(Point point) {
         for(String country : GameElements.COUNTRIES) {
             Territorium current = GameElements.TERRITORIA.get(country);
             for(Polygon shape : current.getShapes()) {

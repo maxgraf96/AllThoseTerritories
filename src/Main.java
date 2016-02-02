@@ -26,10 +26,8 @@ public class Main extends JFrame {
         window.init();
         window.genesis();
 
-        // Start the game
-        Game game = new Game();
-
         // for testing and info
+        HashMap<String, Territorium> tempMap = GameElements.TERRITORIA;
         int bk = 7;
     }
 

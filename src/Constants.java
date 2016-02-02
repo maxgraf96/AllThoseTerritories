@@ -9,6 +9,7 @@ public class Constants{
 
     // Strings
     public static final String WORLD = "World";
+    public static final String OCEAN = "Ocean";
 
     // Game mechanics
     public static final String NONE = "none";

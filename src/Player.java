@@ -51,7 +51,7 @@ public class Player {
                     + this.getEnforcements() + ". Choose wisely.");
         }
         else{
-            if(HelperMethods.getTerritoriumOnClick(point) == null) {
+            if(HelperMethods.getTerritoriumFromPoint(point) == null) {
                 // Tell user to click inside a territory
                 Main.window.setInfoLabelText(Constants.OUTSIDETERRITORY);
             }
