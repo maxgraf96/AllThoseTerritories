@@ -22,8 +22,19 @@ public class Computer {
         while(!success){
             String country = countries.get((int) (Math.random() * countries.size()));
             Territorium current = GameElements.TERRITORIA.get(country);
+            if(current.getConqueredBy().equals(Constants.COMPUTER)) {
+                System.out.println(current.getNeighbors().size() + " size");
+                int maxIndex = current.getNeighbors().size() - 1;
+                for (int i = 0; i <= maxIndex; i++) {
+                    int randomIndex = HelperMethods.randomWithRange(0, maxIndex);
+                    if (!current.getNeighbors().get(randomIndex).isConquered()) {
+                        current = current.getNeighbors().get(randomIndex);
+                        break;
+                    }
+                }
+            }
             if(!current.isConquered()) {
-               current.conquer(1,name);
+                current.conquer(1, name);
                 // Change Label
                 GameElements.TERRITORIA.get(country).getArmiesView()
                         .setText(String.valueOf(GameElements.TERRITORIA.get(country).getNumberOfArmies()));
@@ -110,18 +121,6 @@ public class Computer {
         }
         GameElements.gamePhase = Constants.PHASE_ENFORCE;
         Main.window.getGame().startEnforcementPhase();
-    }
-
-    // True if computer wins, false otherwise
-    private boolean compare(int yours, int enemy){
-        if(yours > enemy)
-            return true;
-        if(yours < enemy)
-            return false;
-        if(yours == enemy)
-            return false;
-
-        return false;
     }
 
     // Calculate enforcements

@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by max on 29.01.16.
@@ -18,6 +19,18 @@ public class HelperMethods {
         return null;
     }
 
+
+
+    public static boolean checkIfOneRulesThemAll(){
+        boolean oneRulesThemAll = true;
+        String ruler ="";
+        for(String each:GameElements.COUNTRIES){
+            Territorium current = GameElements.TERRITORIA.get(each);
+            if (ruler.equals("")) ruler = current.getConqueredBy();
+            else if(!current.getConqueredBy().equals(ruler)) oneRulesThemAll = false;
+        }
+        return oneRulesThemAll;
+    }
     public static boolean attack (Territorium sourceTerritory, Territorium targetTerritory, int availableTroops, int enemyTroops ) {
         // returns true if the attack is successful;
         // Action!
@@ -38,11 +51,18 @@ public class HelperMethods {
 
         // Attack done, if no troops left in attacked territory, move
         if (targetTerritory.getNumberOfArmies() == 0) {
+
             // Update conquered territory
             targetTerritory.conquer(availableTroops, sourceTerritory.getConqueredBy());
 
             // Update source territory
             sourceTerritory.setNumberOfArmies(sourceTerritory.getNumberOfArmies() - availableTroops);
+
+            if(checkIfOneRulesThemAll()){
+
+            }
+            Main.window.repaint();
+
             return true;
         }
         return false;
