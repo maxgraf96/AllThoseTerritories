@@ -60,9 +60,10 @@ public class Computer {
             int random = (int) (Math.random() * (GameElements.COUNTRIES.size() - 1));
             Territorium current = GameElements.TERRITORIA.get(GameElements.COUNTRIES.get(random));
             if(current.getConqueredBy() == name){
-                if (shouldEnforce(current)) {
+                int troops = howMuchEnforce(current);
+                if (troops != 0) {
                     // Update armies
-                    current.setNumberOfArmies(current.getNumberOfArmies() + howMany());
+                    current.setNumberOfArmies(current.getNumberOfArmies() + troops);
                     // Update label over capital city
                     current.getArmiesView().setText(String.valueOf(current.getNumberOfArmies()));
                     System.out.println("I enfroced :" + current.getName());
@@ -161,20 +162,20 @@ public class Computer {
     }
 
     // Should computer enforce?
-    private boolean shouldEnforce(Territorium current) {
-        int bonusProbability = -50;
+    private int howMuchEnforce(Territorium current) {
+        int probabilityModifier = -49;
         for (Territorium each : current.getNeighbors()) {
             if (each.getConqueredBy().equals(Constants.PLAYER))
-                bonusProbability += 100;
-            int range = (int) ((Math.random() * 101) + bonusProbability);
-            return range > 50;
-        } return false;
-    }
-
-    private int howMany(){
-        int number = HelperMethods.randomWithRange(1,this.enforcements);
-        this.enforcements -= number;
-        return number;
+                probabilityModifier += 30;
+        }
+        int chanceToEnforce = (int) ((Math.random() * 101) + probabilityModifier);
+        if (chanceToEnforce > 50) {
+            int min = chanceToEnforce/100 * this.enforcements < this.enforcements ? chanceToEnforce/100 * this.enforcements : this.enforcements;
+            int number = HelperMethods.randomWithRange(min , this.enforcements);
+            this.enforcements -= number;
+            return number;
+        }
+        else return 0;
     }
 
     public String getName() {
