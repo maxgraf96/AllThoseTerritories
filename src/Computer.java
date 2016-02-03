@@ -66,7 +66,6 @@ public class Computer {
                     current.setNumberOfArmies(current.getNumberOfArmies() + troops);
                     // Update label over capital city
                     current.getArmiesView().setText(String.valueOf(current.getNumberOfArmies()));
-                    System.out.println("I enfroced :" + current.getName());
                     if(enforcements == 0)
                         successfullyEnforced = true;
                 }
@@ -163,14 +162,14 @@ public class Computer {
 
     // Should computer enforce?
     private int howMuchEnforce(Territorium current) {
-        int probabilityModifier = -49;
+        int probabilityModifier = -99;
         for (Territorium each : current.getNeighbors()) {
             if (each.getConqueredBy().equals(Constants.PLAYER))
                 probabilityModifier += 30;
         }
         int chanceToEnforce = (int) ((Math.random() * 101) + probabilityModifier);
-        if (chanceToEnforce > 50) {
-            int min = chanceToEnforce/100 * this.enforcements < this.enforcements ? chanceToEnforce/100 * this.enforcements : this.enforcements;
+        if (chanceToEnforce > 0) {
+            int min = (chanceToEnforce* this.enforcements) / 100 < this.enforcements ? (chanceToEnforce * this.enforcements)/100 : this.enforcements;
             int number = HelperMethods.randomWithRange(min , this.enforcements);
             this.enforcements -= number;
             return number;
