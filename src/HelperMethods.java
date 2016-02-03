@@ -1,6 +1,5 @@
 import java.awt.*;
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by max on 29.01.16.
@@ -19,12 +18,10 @@ public class HelperMethods {
         return null;
     }
 
-
-
     public static boolean checkIfOneRulesThemAll(){
         boolean oneRulesThemAll = true;
         String ruler ="";
-        for(String each:GameElements.COUNTRIES){
+        for(String each : GameElements.COUNTRIES){
             Territorium current = GameElements.TERRITORIA.get(each);
             if (ruler.equals("")) ruler = current.getConqueredBy();
             else if(!current.getConqueredBy().equals(ruler)) oneRulesThemAll = false;
@@ -58,11 +55,20 @@ public class HelperMethods {
             // Update source territory
             sourceTerritory.setNumberOfArmies(sourceTerritory.getNumberOfArmies() - availableTroops);
 
+            // If one player has conquered all territories the game ends.
             if(checkIfOneRulesThemAll()){
+                GameElements.gameOver = true;
+                Territorium check = GameElements.TERRITORIA.get(GameElements.COUNTRIES.get(0));
+                String winner = check.getConqueredBy();
 
+                // Set winner
+                GameElements.winner = winner == Constants.PLAYER;
+
+                Main.window.getEndScreen().repaint();
+                Main.window.getEndScreen().setVisible(true);
             }
-            Main.window.repaint();
 
+            Main.window.repaint();
             return true;
         }
         return false;

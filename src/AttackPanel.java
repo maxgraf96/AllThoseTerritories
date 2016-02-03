@@ -9,10 +9,12 @@ import java.awt.event.ActionListener;
 public class AttackPanel extends JPanel {
 
     // Fields
-    JLabel desc = new JLabel("It's ");
-    JLabel desc2 = new JLabel(" against ");
-    JButton confirm = new JButton("Confirm");
-    JButton cancel = new JButton("Cancel");
+    int width = 220;
+    int height = 80;
+    JLabel yourAttackStrength = new JLabel(Constants.YOURATTACKSTRENGTH);
+    JLabel enemyAttackStrength = new JLabel(Constants.ENEMYATTACKSTRENGTH);
+    JButton confirm = new JButton(Constants.ATTACK);
+    JButton cancel = new JButton(Constants.CANCEL);
     JLabel numbers = new JLabel("0");
     JLabel enemyNumbers = new JLabel("0");
 
@@ -29,15 +31,9 @@ public class AttackPanel extends JPanel {
         this.setLayout(new FlowLayout());
         this.setBorder(BorderFactory.createLineBorder(Color.black));
 
-        this.desc.setBounds(0, 0, 280, 20);
-        this.desc2.setBounds(0, 0, 280, 20);
-        this.confirm.setBounds(0, 0, 80, 20);
-        this.cancel.setBounds(0, 0, 80, 20);
-        this.enemyNumbers.setBounds(0, 0, 80, 20);
-
-        this.add(desc);
+        this.add(yourAttackStrength);
         this.add(numbers);
-        this.add(desc2);
+        this.add(enemyAttackStrength);
         this.add(enemyNumbers);
         this.add(confirm);
         this.add(cancel);
@@ -65,9 +61,9 @@ public class AttackPanel extends JPanel {
         // Position at click
         // If click is too near to the right border then draw it "on the left side"
         if(point.x > Constants.WIDTH - 450)
-            this.setBounds(point.x - 450, point.y, 450, 70);
+            this.setBounds(point.x - 450, point.y, width, height);
         else
-            this.setBounds(point.x, point.y, 450, 70);
+            this.setBounds(point.x, point.y, width, height);
 
         //Add listeners
         confirmListener = new ActionListener() {
@@ -90,9 +86,9 @@ public class AttackPanel extends JPanel {
                     // GamePhase to ATTACKFROM
                     GameElements.gamePhase = Constants.PHASE_ATTACKFROM;
                 }
-                // Repaint
-                Main.window.repaint();
+
                 // Always
+                Main.window.repaint();
                 reset();
                 // Lights off!
                 setVisible(false);
@@ -108,6 +104,9 @@ public class AttackPanel extends JPanel {
 
                 // Back to selecting your source T
                 GameElements.gamePhase = Constants.PHASE_ATTACKFROM;
+
+                // Always
+                Main.window.repaint();
             }
         };
         confirm.addActionListener(confirmListener);

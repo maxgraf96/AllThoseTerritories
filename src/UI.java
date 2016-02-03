@@ -34,8 +34,11 @@ public class UI extends JFrame {
     PostConquerPanel postConquerPanel = new PostConquerPanel();
 
     // Buttons
-    JButton confirmEnforcementsButton = new JButton("Done enforcing");
+    JButton DoneEnforcingButton = new JButton("Done enforcing");
     JButton endTurnButton = new JButton("End turn");
+
+    // End screen
+    EndScreen endScreen = new EndScreen();
 
     // This method takes care of the most basic configuration of the main window - everything is CONFIGURED here
     public void init(){
@@ -50,28 +53,28 @@ public class UI extends JFrame {
         setResizable(false);
 
         // Configure infoLabel
-        infoLabel.setBounds(0, this.getHeight() - 70, this.getWidth(), 20);
+        infoLabel.setBounds(0, this.getHeight() - 70, this.getWidth(), 25);
         infoLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         // Configure label for displaying current territory(lower right corner)
-        currentTLabel.setBounds(this.getWidth() - 180, this.getHeight() - 70, 160, 20);
+        currentTLabel.setBounds(this.getWidth() - 180, this.getHeight() - 70, 160, 25);
 
-        // Configure confirmEnforcementsButton
-        confirmEnforcementsButton.setBounds(this.getWidth() - 360, this.getHeight() - 70, 160, 30);
-        confirmEnforcementsButton.addActionListener(new ActionListener() {
+        // Configure DoneEnforcingButton
+        DoneEnforcingButton.setBounds(25, this.getHeight() - 70, 160, 25);
+        DoneEnforcingButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Computer's turn
                 // Next phase is started from computer's enforce method
                 Main.window.getGame().computer.enforce(GameElements.COUNTRIES);
                 // Hide button
-                confirmEnforcementsButton.setVisible(false);
+                DoneEnforcingButton.setVisible(false);
             }
         });
-        confirmEnforcementsButton.setVisible(false);
+        DoneEnforcingButton.setVisible(false);
 
         // Configure endTurnButton
-        endTurnButton.setBounds(this.getWidth() - 360, this.getHeight() - 70, 160, 30);
+        endTurnButton.setBounds(25, this.getHeight() - 70, 160, 25);
         endTurnButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -83,6 +86,12 @@ public class UI extends JFrame {
             }
         });
         endTurnButton.setVisible(false);
+
+        // Configure endScreen
+        endScreen.setBounds(0,0, Constants.WIDTH, Constants.HEIGHT);
+        endScreen.setLayout(null);
+        endScreen.setVisible(false);
+
     }
 
     // Place our stuff(thats a method for itself) - everything is ADDED here
@@ -98,9 +107,9 @@ public class UI extends JFrame {
         myWorld.addMouseMotionListener(game);
 
         // Add Panel for confirming reinforcements
-        myWorld.add(enforcePanel, new Integer(5));
+        myWorld.add(enforcePanel, new Integer(3));
         // Add Panel for starting the game after picking
-        myWorld.add(conquerIntroPanel, new Integer(5));
+        myWorld.add(conquerIntroPanel, new Integer(3));
 
         // Add infoLabel
         myWorld.add(infoLabel);
@@ -111,16 +120,19 @@ public class UI extends JFrame {
         addArmiesLabels();
 
         // Add button for ending enforcement
-        myWorld.add(confirmEnforcementsButton);
+        myWorld.add(DoneEnforcingButton);
 
         // Add button for ending turn
         myWorld.add(endTurnButton);
 
         // Add AttackPanel
-        myWorld.add(attackPanel, new Integer(5));
+        myWorld.add(attackPanel, new Integer(3));
 
         // Add PostConquerPanel
-        myWorld.add(postConquerPanel, new Integer(5));
+        myWorld.add(postConquerPanel, new Integer(3));
+
+        // Add endScreen
+        myWorld.add(endScreen, new Integer(6));
 
         // Add to JFrame
         add(myWorld);
@@ -129,9 +141,6 @@ public class UI extends JFrame {
         setVisible(true);
     }
 
-    public void freeze(){
-        RepaintManager.currentManager(myWorld).markCompletelyClean(myWorld);
-    }
     private void addArmiesLabels(){
         for(String country : GameElements.COUNTRIES){
             Territorium current = GameElements.TERRITORIA.get(country);
@@ -139,10 +148,6 @@ public class UI extends JFrame {
                     Constants.ARMIESVIEWWIDTH, Constants.ARMIESVIEWHEIGHT);
             myWorld.add(current.getArmiesView(), new Integer(1));
         }
-    }
-
-    public JLabel getInfoLabel() {
-        return infoLabel;
     }
 
     public EnforcePanel getEnforcePanel(){
@@ -154,10 +159,6 @@ public class UI extends JFrame {
         repaint();
     }
 
-    public JLabel getCurrentTLabel() {
-        return currentTLabel;
-    }
-
     public void setCurrentTLabelText(String newtext) {
         this.currentTLabel.setText(newtext);
     }
@@ -166,8 +167,8 @@ public class UI extends JFrame {
         return this.game;
     }
 
-    public JButton getConfirmEnforcementsButton() {
-        return confirmEnforcementsButton;
+    public JButton getDoneEnforcingButton() {
+        return DoneEnforcingButton;
     }
 
     public ConquerIntroPanel getConquerIntroPanel() {
@@ -184,5 +185,9 @@ public class UI extends JFrame {
 
     public JButton getEndTurnButton() {
         return endTurnButton;
+    }
+
+    public JPanel getEndScreen() {
+        return endScreen;
     }
 }

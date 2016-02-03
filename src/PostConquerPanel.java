@@ -7,6 +7,9 @@ import java.awt.event.ActionListener;
  */
 public class PostConquerPanel extends EnforcePanel {
 
+    int width = 320;
+    int height = 60;
+
     public void init(Point point, Player player, Territorium sourceTerritory){
         // Get data
         tempTerritories = sourceTerritory.getNumberOfArmies() - 1;
@@ -17,9 +20,9 @@ public class PostConquerPanel extends EnforcePanel {
         // Position at click
         // If click is too near to the right border then draw it "on the left side"
         if(point.x > Constants.WIDTH - 450)
-            this.setBounds(point.x - 450, point.y, 450, 70);
+            this.setBounds(point.x - 450, point.y, width, height);
         else
-            this.setBounds(point.x, point.y, 450, 70);
+            this.setBounds(point.x, point.y, width, height);
 
         //Add listeners
         minusListener = new  ActionListener() {
@@ -55,6 +58,7 @@ public class PostConquerPanel extends EnforcePanel {
                 GameElements.gamePhase = Constants.PHASE_ATTACKFROM;
 
                 // Always
+                Main.window.repaint();
                 reset();
                 // Lights off!
                 setVisible(false);
@@ -68,6 +72,9 @@ public class PostConquerPanel extends EnforcePanel {
 
                 reset();
                 setVisible(false);
+
+                // Always
+                Main.window.repaint();
             }
         };
 

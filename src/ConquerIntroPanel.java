@@ -14,7 +14,7 @@ public class ConquerIntroPanel extends JPanel {
 
     // Constructor
     public ConquerIntroPanel(){
-        this.setBounds(Constants.WIDTH / 3, Constants.HEIGHT -500, 400, 80);
+        this.setBounds(Constants.WIDTH / 3, Constants.HEIGHT - 500, 450, 65);
         this.setLayout(new FlowLayout());
         this.setBorder(BorderFactory.createLineBorder(Color.black));
 
@@ -25,7 +25,12 @@ public class ConquerIntroPanel extends JPanel {
         confirm.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                // Start enforcements
+                Main.window.getGame().startEnforcementPhase();
                 setVisible(false);
+
+                // Always
+                Main.window.repaint();
             }
 
             @Override

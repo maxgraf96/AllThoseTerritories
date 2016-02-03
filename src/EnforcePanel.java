@@ -9,9 +9,11 @@ import java.awt.event.ActionListener;
 public class EnforcePanel extends JPanel {
 
     // Fields
+    int width = 440;
+    int height = 60;
     JLabel desc = new JLabel("Description goes here");
-    JButton confirm = new JButton("Confirm");
-    JButton cancel = new JButton("Cancel");
+    JButton confirm = new JButton(Constants.PLACE);
+    JButton cancel = new JButton(Constants.CANCEL);
     JButton plus = new JButton("+");
     JButton minus = new JButton("-");
     JLabel number = new JLabel("0");
@@ -52,15 +54,15 @@ public class EnforcePanel extends JPanel {
         // Get data
         tempTerritories = player.getEnforcements();
         // Init label
-        desc.setText("How many armies would you like to deploy in this territory?");
+        desc.setText(Constants.DEPLOYHOWMANYARMIES);
         number.setText(String.valueOf(tempTerritories));
 
         // Position at click
         // If click is too near to the right border then draw it "on the left side"
         if(point.x > Constants.WIDTH - 450)
-            this.setBounds(point.x - 450, point.y, 450, 70);
+            this.setBounds(point.x - 450, point.y, width, height);
         else
-            this.setBounds(point.x, point.y, 450, 70);
+            this.setBounds(point.x, point.y, width, height);
 
         //Add listeners
         minusListener = new  ActionListener() {
@@ -113,6 +115,7 @@ public class EnforcePanel extends JPanel {
                     Main.window.getGame().player.enforce(point, false);
 
                 // Always
+                Main.window.repaint();
                 reset();
                 // Lights off!
                 setVisible(false);
@@ -121,6 +124,8 @@ public class EnforcePanel extends JPanel {
         cancelListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Always
+                Main.window.repaint();
                 reset();
                 setVisible(false);
             }

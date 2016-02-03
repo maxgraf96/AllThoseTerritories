@@ -20,4 +20,9 @@ public class GameElements {
     public static String gamePhase = Constants.PHASE_PICK;
 
     public static boolean turn = true; // True if your turn, false if computer's turn
+
+    // For the end of the game
+    public static boolean gameOver = false;
+    // True if player, false if computer
+    public static boolean winner;
 }

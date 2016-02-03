@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * Created by Nemanja on 16.01.2016.
@@ -25,14 +26,42 @@ public class MapReader {
     }
 
     // Methods
-    public HashMap<Integer,String> readMap() throws IOException{
+    public HashMap<Integer,String> readMap() throws IOException {
 
         // HashMap for each line of map file
         HashMap<Integer, String> stringMap = new HashMap();
         // Counter for line numbers in HashMap
         int counter = 0;
 
-        BufferedReader br = new BufferedReader(new FileReader("Resources/Maps/world.map"));
+        boolean correctWorld = false;
+        String world = "";
+        while(!correctWorld){
+            System.out.println(Constants.ENTERWORLD);
+            Scanner scanner = new Scanner(System.in);
+            world = scanner.nextLine();
+            if(world.equals("Africa") || world.equals("Squares") || world.equals("Three-continents")
+                    || world.equals("World"))
+                correctWorld = true;
+        }
+
+        String playMap = "";
+        switch (world) {
+            case "Africa":
+                playMap = "Resources/Maps/africa.map";
+                break;
+            case "Squares":
+                playMap = "Resources/Maps/squares.map";
+                break;
+            case "Three-continents":
+                playMap = "Resources/Maps/three-continents.map";
+                break;
+            case "World":
+                playMap = "Resources/Maps/world.map";
+                break;
+            default:
+                break;
+        }
+            BufferedReader br = new BufferedReader(new FileReader(playMap));
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
 
@@ -40,7 +69,7 @@ public class MapReader {
                 sb.append(line);
 
                 // Put line into Hashmap
-                stringMap.put(counter,line);
+                stringMap.put(counter, line);
 
                 // Up the counter
                 counter++;

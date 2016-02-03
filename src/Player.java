@@ -65,6 +65,7 @@ public class Player {
     // Helper methods
     // Calculate enforcements
     public int calcEnforcements(){
+
         int territories = 0;
         int bonus = 0;
         int enforcements;

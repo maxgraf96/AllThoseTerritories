@@ -10,6 +10,8 @@ import java.awt.event.MouseMotionListener;
 public class Game implements MouseListener, MouseMotionListener {
 
     // Fields
+    // Boolean for enabling/disabling click events
+    private boolean clickable = true;
     // Players
     public Player player = new Player();
     public Computer computer = new Computer();
@@ -32,7 +34,7 @@ public class Game implements MouseListener, MouseMotionListener {
         GameElements.gamePhase = Constants.PHASE_ENFORCE;
 
         // Assign enforcements
-        player.enforcements += player.calcEnforcements();
+        player.enforcements = player.calcEnforcements();
         computer.enforcements += computer.calcEnforcements();
 
         // Display info
@@ -40,7 +42,7 @@ public class Game implements MouseListener, MouseMotionListener {
                 + player.getEnforcements() + ". Choose wisely.");
 
         // Enable enforcement done button
-        Main.window.getConfirmEnforcementsButton().setVisible(true);
+        Main.window.getDoneEnforcingButton().setVisible(true);
     }
 
     public void startAttackPhase(){
@@ -49,6 +51,9 @@ public class Game implements MouseListener, MouseMotionListener {
 
         // Make endTurnButton visible
         Main.window.getEndTurnButton().setVisible(true);
+
+        // (Re)enable moving by right click
+        backAndForth = true;
     }
 
     // returns true when clicked on a territory currently owned by the player
@@ -87,6 +92,10 @@ public class Game implements MouseListener, MouseMotionListener {
         }
 
         switch (GameElements.gamePhase) {
+            // Case for disabling clicks
+            case Constants.PHASE_IDLE:
+                // Do nothing
+                break;
             case Constants.PHASE_PICK:
                 // Fire
                 boolean successfullyPicked = player.pick(GameElements.COUNTRIES, point);
@@ -100,27 +109,33 @@ public class Game implements MouseListener, MouseMotionListener {
                     // Show message that all territories have been selected and start the game
                     Main.window.getConquerIntroPanel().setVisible(true);
 
-                    // Start enforcements
-                    Main.window.getGame().startEnforcementPhase();
+                    //Main.window.getTransparentPanel().setVisible(true);
+                    GameElements.gamePhase = Constants.PHASE_IDLE;
                 }
                 break;
 
             case Constants.PHASE_ENFORCE:
                 // Show dialog
                 // No double dialogs
-                if (!Main.window.getEnforcePanel().isVisible()) {
-                    if (checkClick(point)) {
-                        // Only if he has clicked inside a territory
-                        Main.window.getEnforcePanel().setVisible(true);
-                        Main.window.getEnforcePanel().init(point, player);
-                    }
-                } else {
-                    Main.window.getEnforcePanel().setVisible(false);
+                // If you have no more troops to enforce panel doesn't open and message is displayed
+                if(player.getEnforcements() == 0){
+                    Main.window.setInfoLabelText(Constants.NOMOREENFORCEMENTS);
+                }
+                else {
+                    if (!Main.window.getEnforcePanel().isVisible()) {
+                        if (checkClick(point)) {
+                            // Only if he has clicked inside a territory
+                            Main.window.getEnforcePanel().setVisible(true);
+                            Main.window.getEnforcePanel().init(point, player);
+                        }
+                    } else {
+                        Main.window.getEnforcePanel().setVisible(false);
                     /*Reset is really important. Because we don't actually add and remove the
                     * enforcePanel every time(we just hide and show it) the counters would still increase
                     * so if you openend it three times and closed it three times you would be adding 3
                     * armies, even if you only had 1!*/
-                    Main.window.getEnforcePanel().reset();
+                        Main.window.getEnforcePanel().reset();
+                    }
                 }
 
                 break;
@@ -296,5 +311,9 @@ public class Game implements MouseListener, MouseMotionListener {
             Territorium current = GameElements.TERRITORIA.get(country);
             current.setSelected(false);
         }
+    }
+
+    public void setClickable(boolean clickable) {
+        this.clickable = clickable;
     }
 }
