@@ -23,7 +23,6 @@ public class Computer {
             String country = countries.get((int) (Math.random() * countries.size()));
             Territorium current = GameElements.TERRITORIA.get(country);
             if(current.getConqueredBy().equals(Constants.COMPUTER)) {
-                System.out.println(current.getNeighbors().size() + " size");
                 int maxIndex = current.getNeighbors().size() - 1;
                 for (int i = 0; i <= maxIndex; i++) {
                     int randomIndex = HelperMethods.randomWithRange(0, maxIndex);
@@ -56,16 +55,17 @@ public class Computer {
 
     public void enforce(List<String> countries){
         boolean successfullyEnforced = false;
+        int bonusProbability = -51;
         while(!successfullyEnforced) {
             int random = (int) (Math.random() * (GameElements.COUNTRIES.size() - 1));
             Territorium current = GameElements.TERRITORIA.get(GameElements.COUNTRIES.get(random));
             if(current.getConqueredBy() == name){
-                if (shouldEnforce()) {
+                if (shouldEnforce(current)) {
                     // Update armies
                     current.setNumberOfArmies(current.getNumberOfArmies() + howMany());
                     // Update label over capital city
                     current.getArmiesView().setText(String.valueOf(current.getNumberOfArmies()));
-
+                    System.out.println("I enfroced :" + current.getName());
                     if(enforcements == 0)
                         successfullyEnforced = true;
                 }
@@ -161,13 +161,18 @@ public class Computer {
     }
 
     // Should computer enforce?
-    private boolean shouldEnforce(){
-        int range = (int) (Math.random() * 101);
-        return range > 50;
+    private boolean shouldEnforce(Territorium current) {
+        int bonusProbability = -50;
+        for (Territorium each : current.getNeighbors()) {
+            if (each.getConqueredBy().equals(Constants.PLAYER))
+                bonusProbability += 100;
+            int range = (int) ((Math.random() * 101) + bonusProbability);
+            return range > 50;
+        } return false;
     }
 
     private int howMany(){
-        int number = (int) (Math.random() * (this.enforcements+1));
+        int number = HelperMethods.randomWithRange(1,this.enforcements);
         this.enforcements -= number;
         return number;
     }
