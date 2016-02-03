@@ -1,3 +1,5 @@
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -111,6 +113,19 @@ public class Computer {
 
                             // Attack done, if no troops left in attacked territory, move
                            HelperMethods.attack(current, enemyTerritory,availableTroops,enemyTroops);
+
+                            if(enemyTerritory.getConqueredBy().equals(Constants.COMPUTER)){
+                                boolean move = true;
+                                for (Territorium each : current.getNeighbors()) {
+                                    if (each.getConqueredBy().equals(Constants.PLAYER))
+                                        move = false;
+                                }
+                                if(move) {
+                                    enemyTerritory.setNumberOfArmies(current.getNumberOfArmies() - 1 + enemyTerritory.getNumberOfArmies());
+                                    current.setNumberOfArmies(1);
+                                }
+                                System.out.println(move);
+                            }
 
                             // Repaint
                             Main.window.repaint();
