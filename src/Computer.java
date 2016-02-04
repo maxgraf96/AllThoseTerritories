@@ -1,6 +1,3 @@
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
-
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -61,7 +58,7 @@ public class Computer {
         while(!successfullyEnforced) {
             int random = (int) (Math.random() * (GameElements.COUNTRIES.size() - 1));
             Territorium current = GameElements.TERRITORIA.get(GameElements.COUNTRIES.get(random));
-            if(current.getConqueredBy() == name){
+            if(current.getConqueredBy().equals(name)){
                 int troops = howMuchEnforce(current);
                 if (troops != 0) {
                     // Update armies
@@ -187,9 +184,13 @@ public class Computer {
             int min = (chanceToEnforce* this.enforcements) / 100 < this.enforcements ? (chanceToEnforce * this.enforcements)/100 : this.enforcements;
             int number = HelperMethods.randomWithRange(min , this.enforcements);
             this.enforcements -= number;
+            probabilityModifier = -99;
             return number;
         }
-        else return 0;
+        else {
+            probabilityModifier = -99;
+            return 0;
+        }
     }
 
     public String getName() {

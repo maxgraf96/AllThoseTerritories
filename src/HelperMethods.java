@@ -62,7 +62,7 @@ public class HelperMethods {
                 String winner = check.getConqueredBy();
 
                 // Set winner
-                GameElements.winner = winner == Constants.PLAYER;
+                GameElements.winner = winner.equals(Constants.PLAYER);
 
                 Main.window.getEndScreen().repaint();
                 Main.window.getEndScreen().setVisible(true);
